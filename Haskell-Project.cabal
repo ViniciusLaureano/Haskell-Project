@@ -25,7 +25,13 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Board
+      GameComponents
+      Menu
+      MenuFunctionalities
+      Stages
+      Validations
+      WindowManipulation
   other-modules:
       Paths_Haskell_Project
   autogen-modules:
