@@ -4,6 +4,8 @@ import UI.HSCurses.Curses
 
 import WindowManipulation
 
+import Board 
+
 
 newGame :: Window -> IO ()
 newGame window = do
