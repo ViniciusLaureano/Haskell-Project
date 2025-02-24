@@ -11,7 +11,6 @@ data GameState = GameState
   , rounds :: Int
   , players :: (Int, String, String)
   , phase :: Phase
-  , window :: Window
   } deriving (Show, Generic)
 
 data Phase = Phase1 | Phase2 | Phase3 deriving (Show, Eq, Generic)

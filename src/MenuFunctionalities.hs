@@ -29,9 +29,9 @@ continueGame window = do
 
 gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
 gamePhase state
-  | phase state == Phase1 = Stages.stage1
-  | phase state == Phase2 = Stages.stage2
-  | phase state == Phase3 = Stages.stage3
+  | phase state == Phase1 = stage1
+  | phase state == Phase2 = stage2
+  | phase state == Phase3 = stage3
   | otherwise = error "Invalid game phase"
 
 saveGame :: GameState -> IO ()
