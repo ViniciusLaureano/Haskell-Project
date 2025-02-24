@@ -37,13 +37,14 @@ mainMenu selectedIndex window = do
 
 
 menuOptions :: [String]
-menuOptions = ["Novo Jogo", "Continue", "Histórico", "Sair"]
+menuOptions = ["Novo Jogo", "Continue", "Tutorial", "Histórico", "Sair"]
 
 
 handleSelection :: Int -> Window -> IO ()
 handleSelection index window
   | index == 0 = newGame window >> mainMenu 0 window
   | index == 1 = continueGame window >> mainMenu 0 window
-  | index == 2 = matchHistory window >> mainMenu 0 window
-  | index == 3 = endWin
+  | index == 2 = tutorial window >> mainMenu 0 window
+  | index == 3 = matchHistory window >> mainMenu 0 window
+  | index == 4 = endWin
   | otherwise = mainMenu 0 window

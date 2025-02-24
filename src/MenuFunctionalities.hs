@@ -1,14 +1,14 @@
-module MenuFunctionalities (newGame, continueGame, saveGame, matchHistory) where
+module MenuFunctionalities (newGame, continueGame, saveGame, tutorial, matchHistory) where
 
 import UI.HSCurses.Curses
 
 import WindowManipulation
 
-import Data.Aeson (FromJSON, ToJSON, encode, decode)
+import Data.Aeson (encode, decode)
 
 import qualified Data.ByteString.Lazy as B
 
-import GameState (GameState)
+import GameState (GameState(..), Phase(..))
 
 import Stages
 
@@ -18,14 +18,26 @@ newGame window = do
 
 continueGame :: Window -> IO ()
 continueGame window = do
-  jsonData <- B.readFile "savegame.json"
+  jsonData <- B.readFile "json/saveGame.json"
   let loadedGame = decode jsonData :: Maybe GameState
 
   case loadedGame of 
     Just state -> do
       let phaseFunc = gamePhase state
-      phaseFunc (board state) (rounds state) (players state) window
+      phaseFunc (gameBoard state) (rounds state) (players state) window
     Nothing -> putStrLn "Erro ao carregar jogo"
+
+
+tutorial :: Window -> IO ()
+tutorial window = do
+  clearAndWriteScreen 0 0 "Not implemented yet" window
+
+
+matchHistory :: Window -> IO ()
+matchHistory window = do
+  clearAndWriteScreen 0 0 "Not implemented yet" window
+
+
 
 gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
 gamePhase state
@@ -35,9 +47,4 @@ gamePhase state
   | otherwise = error "Invalid game phase"
 
 saveGame :: GameState -> IO ()
-saveGame gameState = B.writeFile "savegame.json" (encode gameState)
-
-
-matchHistory :: Window -> IO ()
-matchHistory window = do
-  clearAndWriteScreen 0 0 "Not implemented yet" window
+saveGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
