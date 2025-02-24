@@ -15,7 +15,6 @@ data GameState = GameState
 
 data Phase = Phase1 | Phase2 | Phase3 deriving (Show, Eq, Generic)
 
-
 instance ToJSON Phase
 instance FromJSON Phase
 instance ToJSON GameState

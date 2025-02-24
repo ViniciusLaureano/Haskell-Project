@@ -33,9 +33,13 @@ tutorial window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
 
-matchHistory :: Window -> IO ()
+matchHistory :: Window -> [([[(Int, Int)]], (Int, String, String))]
 matchHistory window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
+
+
+saveFinalGameState :: GameState -> IO()
+saveFinalGameState gameState = B.writeFile "json/saveHistory.json" (encode gameState)
 
 
 
