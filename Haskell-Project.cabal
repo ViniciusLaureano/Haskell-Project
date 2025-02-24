@@ -29,6 +29,7 @@ library
       GameComponents
       Menu
       MenuFunctionalities
+      Stage1Functions
       Stages
       Validations
       WindowManipulation
