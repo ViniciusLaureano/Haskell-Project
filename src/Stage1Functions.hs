@@ -1,9 +1,9 @@
-module Stage1Functions (readPiece, markPosition) where
+module Stage1Functions (readPiece, markPosition, mostraJogador) where
 
 import UI.HSCurses.Curses
 
 import Board
-
+import WindowManipulation
 
 -- Função para verificar se a posição é válida
 isValidPosition :: [[(Int, Int)]] -> (Int, Int) -> Bool
@@ -50,3 +50,11 @@ readPiece matriz cursor window = do
     KeyChar '\n' -> return cursor
     KeyChar 'q' -> return (-1, -1)
     _ -> readPiece matriz cursor window
+
+
+mostraJogador :: Int -> String -> String -> Window -> IO ()
+mostraJogador jogador nomeJogador1 nomeJogador2 window = 
+  if jogador == 1 then 
+    clearAndWriteScreen 0 0 nomeJogador1 window
+  else
+    clearAndWriteScreen 0 0 nomeJogador2 window

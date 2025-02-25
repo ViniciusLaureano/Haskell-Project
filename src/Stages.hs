@@ -10,7 +10,9 @@ stage1 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ()
 stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) window = 
   if validateStage1 totJogadas 
     then stage2 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) window
-  else do     
+  else do
+    mostraJogador jogador nomeJogador1 nomeJogador2 window
+
     cursor <- readPiece matriz (1, 1) window
     let novaMatriz = markPosition matriz cursor jogador
 
