@@ -4,13 +4,16 @@ import UI.HSCurses.Curses
 
 import WindowManipulation
 import Validations
+import Board
+import Stage1Functions
 
 stage1 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ()
 stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) window = 
   if validateStage1 totJogadas 
     then stage2 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) window
   else do
-    clearAndWriteScreen 0 0 "Not implemented yet" window 
+    --clearAndWriteScreen 0 0 "Not implemented yet" window 
+    mainLoop matriz (1, 1) window
 
 
 stage2 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ()

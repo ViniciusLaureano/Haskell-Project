@@ -31,6 +31,7 @@ library
       GameState
       Menu
       MenuFunctionalities
+      Stage1Functions
       Stages
       Tutorial
       Validations
