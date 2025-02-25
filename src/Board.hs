@@ -1,4 +1,4 @@
-module Board (boardGenerate, drawBoard, drawPointer) where
+module Board (boardGenerate) where
 
 import UI.HSCurses.Curses
 
@@ -9,32 +9,30 @@ import WindowManipulation
 
 boardGenerate :: (Int, Int) -> [[(Int, Int)]] -> Window -> IO ()
 boardGenerate (y, x) matriz window = do
-  drawBoard matriz window
+  boardBody window
   findPieces matriz 1 1 window
   drawPointer (y, x) window
 
 
-drawBoard :: [[(Int, Int)]] -> Window -> IO ()
-drawBoard matriz window = boardBody window
+drawPointer :: (Int, Int) -> Window -> IO ()
+drawPointer (y, x) window = do
+  (rows, cols) <- scrSize
+  writeScreen ((y - 1) * 3 + (rows `div` 2 - 9)) ((x - 1) * 6 + (cols `div` 2 - 17)) "X" window
 
-
-drawPointer :: (Int, Int) -> Window -> IO()
--- drawPointer (y, x) window = writeScreen 14 60  "X" window
-drawPointer (y, x) window = writeScreen line cols "X" window
-  where
-    line = (y * 3 + 14)
-    cols = (x * 6 + 60)
-
-drawPieces :: (Int, Int) -> Int -> Window -> IO()
+drawPieces :: (Int, Int) -> Int -> Window -> IO ()
 drawPieces (y, x) player window = do
-  if player == 1 then writeScreen line cols "1" window
-  else writeScreen y x "2" window
-  where
-    line = (y * 3 + 14)
-    cols = (x * 6 + 60)
+  (rows, cols) <- scrSize
+  
+  if player == 1 then 
+    writeScreen ((y - 2) * 3 + (rows `div` 2 - 9)) ((x - 2) * 6 + (cols `div` 2 - 17)) "1" window
+  else 
+    if player == 2 then
+      writeScreen ((y - 2) * 3 + (rows `div` 2 - 9)) ((x - 2) * 6 + (cols `div` 2 - 17)) "2" window
+    else
+      return ()
 
 
-findPieces :: [[(Int, Int)]] -> Int -> Int -> Window -> IO()
+findPieces :: [[(Int, Int)]] -> Int -> Int -> Window -> IO ()
 findPieces [] i j window = return ()
 findPieces (h : tail) i j window = do
   findCols h i j window
@@ -48,9 +46,6 @@ findCols (h : tail) i j window = do
     drawPieces(i, j) (snd h) window
     findCols tail i (j + 1) window
   else findCols tail i (j + 1) window
-
-
-
 
 
 boardBody :: Window -> IO ()
