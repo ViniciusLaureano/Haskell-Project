@@ -14,7 +14,6 @@ boardGenerate (y, x) matriz window = do
   drawPointer (y, x) window
 
 
-
 drawBoard :: [[(Int, Int)]] -> Window -> IO ()
 drawBoard matriz window = boardBody window
 
@@ -42,7 +41,7 @@ findPieces (h : tail) i j window = do
   findPieces tail (i + 1) j window
 
 
-findCols :: [(Int, Int)] -> Int -> Int -> Window -> IO()
+findCols :: [(Int, Int)] -> Int -> Int -> Window -> IO ()
 findCols [] i j window = return ()
 findCols (h : tail) i j window = do
   if snd h /= 0 then do
@@ -54,24 +53,27 @@ findCols (h : tail) i j window = do
 
 
 
-boardBody :: Window -> IO()
+boardBody :: Window -> IO ()
 boardBody window = do
-  writeScreen 14 60 " *━━━━━━━━━━━━━━━━━*━━━━━━━━━━━━━━━━━*" window
-  writeScreen 15 60 " ┃                 ┃                 ┃" window
-  writeScreen 16 60 " ┃                 ┃                 ┃" window
-  writeScreen 17 60 " ┃     *━━━━━━━━━━━*━━━━━━━━━━━*     ┃" window 
-  writeScreen 18 60 " ┃     ┃           ┃           ┃     ┃" window
-  writeScreen 19 60 " ┃     ┃           ┃           ┃     ┃" window
-  writeScreen 20 60 " ┃     ┃     *━━━━━*━━━━━*     ┃     ┃" window
-  writeScreen 21 60 " ┃     ┃     ┃           ┃     ┃     ┃" window
-  writeScreen 22 60 " ┃     ┃     ┃           ┃     ┃     ┃" window
-  writeScreen 23 60 " *━━━━━*━━━━━*           *━━━━━*━━━━━*" window
-  writeScreen 24 60 " ┃     ┃     ┃           ┃     ┃     ┃" window
-  writeScreen 25 60 " ┃     ┃     ┃           ┃     ┃     ┃" window
-  writeScreen 26 60 " ┃     ┃     *━━━━━*━━━━━*     ┃     ┃" window
-  writeScreen 27 60 " ┃     ┃           ┃           ┃     ┃" window
-  writeScreen 28 60 " ┃     ┃           ┃           ┃     ┃" window
-  writeScreen 29 60 " ┃     *━━━━━━━━━━━*━━━━━━━━━━━*     ┃" window
-  writeScreen 30 60 " ┃                 ┃                 ┃" window
-  writeScreen 31 60 " ┃                 ┃                 ┃" window
-  writeScreen 32 60 " *━━━━━━━━━━━━━━━━━*━━━━━━━━━━━━━━━━━*" window
+  (rows, cols) <- scrSize
+
+  writeScreen (rows `div` 2 - 9) (cols `div` 2 - 18) " *━━━━━━━━━━━━━━━━━*━━━━━━━━━━━━━━━━━*" window
+  writeScreen (rows `div` 2 - 8) (cols `div` 2 - 18) " ┃                 ┃                 ┃" window
+  writeScreen (rows `div` 2 - 7) (cols `div` 2 - 18) " ┃                 ┃                 ┃" window
+  writeScreen (rows `div` 2 - 6) (cols `div` 2 - 18) " ┃     *━━━━━━━━━━━*━━━━━━━━━━━*     ┃" window 
+  writeScreen (rows `div` 2 - 5) (cols `div` 2 - 18) " ┃     ┃           ┃           ┃     ┃" window
+  writeScreen (rows `div` 2 - 4) (cols `div` 2 - 18) " ┃     ┃           ┃           ┃     ┃" window
+  writeScreen (rows `div` 2 - 3) (cols `div` 2 - 18) " ┃     ┃     *━━━━━*━━━━━*     ┃     ┃" window
+  writeScreen (rows `div` 2 - 2) (cols `div` 2 - 18) " ┃     ┃     ┃           ┃     ┃     ┃" window
+  writeScreen (rows `div` 2 - 1) (cols `div` 2 - 18) " ┃     ┃     ┃           ┃     ┃     ┃" window
+  writeScreen (rows `div` 2 - 0) (cols `div` 2 - 18) " *━━━━━*━━━━━*           *━━━━━*━━━━━*" window
+  writeScreen (rows `div` 2 + 1) (cols `div` 2 - 18) " ┃     ┃     ┃           ┃     ┃     ┃" window
+  writeScreen (rows `div` 2 + 2) (cols `div` 2 - 18) " ┃     ┃     ┃           ┃     ┃     ┃" window
+  writeScreen (rows `div` 2 + 3) (cols `div` 2 - 18) " ┃     ┃     *━━━━━*━━━━━*     ┃     ┃" window
+  writeScreen (rows `div` 2 + 4) (cols `div` 2 - 18) " ┃     ┃           ┃           ┃     ┃" window
+  writeScreen (rows `div` 2 + 5) (cols `div` 2 - 18) " ┃     ┃           ┃           ┃     ┃" window
+  writeScreen (rows `div` 2 + 6) (cols `div` 2 - 18) " ┃     *━━━━━━━━━━━*━━━━━━━━━━━*     ┃" window
+  writeScreen (rows `div` 2 + 7) (cols `div` 2 - 18) " ┃                 ┃                 ┃" window
+  writeScreen (rows `div` 2 + 8) (cols `div` 2 - 18) " ┃                 ┃                 ┃" window
+  writeScreen (rows `div` 2 + 9) (cols `div` 2 - 18) " *━━━━━━━━━━━━━━━━━*━━━━━━━━━━━━━━━━━*" window
+
