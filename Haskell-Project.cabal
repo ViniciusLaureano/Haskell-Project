@@ -30,6 +30,7 @@ library
       GameComponents
       GameState
       HistoryShenanigans
+      JsonManipulation
       Menu
       MenuFunctionalities
       Stage1Functions

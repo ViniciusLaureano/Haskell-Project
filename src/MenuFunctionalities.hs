@@ -8,6 +8,7 @@ import qualified Data.ByteString.Lazy as B
 import Board 
 import Stages
 import GameComponents
+import JsonManipulation
 import WindowManipulation
 import GameState (GameState(..), Phase(..))
 
@@ -18,7 +19,7 @@ newGame window = do
 
   clearAndWriteScreenCenter (centerRow - 2) "Bem-vindo ao Nine Men's Morris!" window
 
-  threadDelay 1500000
+  threadDelay 1000000
 
   writeScreenCenter centerRow "Digite o nome do Jogador 1: " window
 
@@ -53,15 +54,6 @@ matchHistory :: Window -> IO ()
 matchHistory window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
-
-gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
-gamePhase state
-  | phase state == Phase1 = stage1
-  | phase state == Phase2 = stage2
-  | phase state == Phase3 = stage3
-  | otherwise = error "Invalid game phase"
-
-
 getString :: Int -> Int -> Window -> IO String
 getString linha coluna window = loop ""
   where
@@ -94,10 +86,9 @@ getString linha coluna window = loop ""
       KeyBackspace -> Just '\DEL'
       _ -> Nothing
 
-
-saveFinalGameState :: GameState -> IO()
-saveFinalGameState gameState = B.writeFile "json/saveHistory.json" (encode gameState)
-
-
-saveGame :: GameState -> IO ()
-saveGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
+gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
+gamePhase state
+  | phase state == Phase1 = stage1
+  | phase state == Phase2 = stage2
+  | phase state == Phase3 = stage3
+  | otherwise = error "Invalid game phase"
