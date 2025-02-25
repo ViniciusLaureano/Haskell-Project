@@ -1,4 +1,4 @@
-module Stage1Functions (mainLoop) where
+module Stage1Functions (readPiece, markPosition) where
 
 import UI.HSCurses.Curses
 
@@ -30,23 +30,23 @@ moveCursor matriz (r, c) (dr, dc) =
   in if isValidPosition matriz newPos then newPos else (r, c)
 
 -- Função para marcar uma posição no tabuleiro
-markPosition :: [[(Int, Int)]] -> (Int, Int) -> [[(Int, Int)]]
-markPosition matriz (r, c) =
+markPosition :: [[(Int, Int)]] -> (Int, Int) -> Int -> [[(Int, Int)]]
+markPosition matriz (r, c) player =
   let (v, _) = matriz !! r !! c
   in if v == 1
-     then take r matriz ++ [take c (matriz !! r) ++ [(1, 1)] ++ drop (c + 1) (matriz !! r)] ++ drop (r + 1) matriz
+     then take r matriz ++ [take c (matriz !! r) ++ [(1, player)] ++ drop (c + 1) (matriz !! r)] ++ drop (r + 1) matriz
      else matriz
 
 
-mainLoop :: [[(Int, Int)]] -> (Int, Int) -> Window -> IO ()
-mainLoop matriz cursor window= do
+readPiece :: [[(Int, Int)]] -> (Int, Int) -> Window -> IO (Int, Int)
+readPiece matriz cursor window = do
   boardGenerate cursor matriz window
   ev <- getCh
   case ev of
-    KeyChar 'w' -> mainLoop matriz (moveCursor matriz cursor (-1, 0)) window
-    KeyChar 's' -> mainLoop matriz (moveCursor matriz cursor (1, 0)) window
-    KeyChar 'a' -> mainLoop matriz (moveCursor matriz cursor (0, -1)) window
-    KeyChar 'd' -> mainLoop matriz (moveCursor matriz cursor (0, 1)) window
-    KeyChar 'm' -> mainLoop (markPosition matriz cursor) cursor window
-    KeyChar 'q' -> return () 
-    _ -> mainLoop matriz cursor window
+    KeyChar 'w' -> readPiece matriz (moveCursor matriz cursor (-1, 0)) window
+    KeyChar 's' -> readPiece matriz (moveCursor matriz cursor (1, 0)) window
+    KeyChar 'a' -> readPiece matriz (moveCursor matriz cursor (0, -1)) window
+    KeyChar 'd' -> readPiece matriz (moveCursor matriz cursor (0, 1)) window
+    KeyChar '\n' -> return cursor
+    KeyChar 'q' -> return (-1, -1)
+    _ -> readPiece matriz cursor window
