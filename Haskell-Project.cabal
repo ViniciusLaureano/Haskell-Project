@@ -29,6 +29,7 @@ library
       BotFunctions
       GameComponents
       GameState
+      HistoryShenanigans
       Menu
       MenuFunctionalities
       Stage1Functions

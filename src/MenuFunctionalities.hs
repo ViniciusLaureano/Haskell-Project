@@ -6,8 +6,6 @@ import WindowManipulation
 
 import Board 
 
-import Board 
-
 import Data.Aeson (encode, decode)
 
 import qualified Data.ByteString.Lazy as B
@@ -63,7 +61,7 @@ tutorial window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
 
-matchHistory :: Window -> [([[(Int, Int)]], (Int, String, String))]
+matchHistory :: Window -> IO ()
 matchHistory window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
