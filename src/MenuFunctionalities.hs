@@ -62,3 +62,68 @@ tutorial window = do
 matchHistory :: Window -> [([[(Int, Int)]], (Int, String, String))]
 matchHistory window = do
   clearAndWriteScreen 0 0 "Not implemented yet" window
+
+
+saveFinalGameState :: GameState -> IO()
+saveFinalGameState gameState = B.writeFile "json/saveHistory.json" (encode gameState)
+
+
+
+gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
+gamePhase state
+  | phase state == Phase1 = stage1
+  | phase state == Phase2 = stage2
+  | phase state == Phase3 = stage3
+  | otherwise = error "Invalid game phase"
+
+saveGame :: GameState -> IO ()
+saveGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
+getString :: Int -> Int -> Window -> IO String
+getString linha coluna window = loop ""
+  where
+    loop str = do
+      -- Move o cursor para a posição correta e exibe a string atual
+      mvWAddStr window linha coluna (str ++ replicate (50 - length str) ' ')  -- Limpa a área de digitação
+      mvWAddStr window linha coluna str  -- Exibe a string atual
+      wRefresh window
+
+      -- Captura um caractere
+      ch <- getCh  -- getCh retorna um valor do tipo Key
+      case keyToChar ch of
+        -- Enter (código 10 ou 13)
+        Just '\n' -> return str  -- Retorna a string quando o usuário pressiona Enter
+        Just '\r' -> return str  -- Alternativa para Enter
+        -- Backspace (código 127 ou 8)
+        Just '\DEL' -> handleBackspace str
+        Just '\BS' -> handleBackspace str
+        -- Outros caracteres
+        Just c -> do
+          -- Adiciona o caractere à string
+          let newStr = str ++ [c]
+          loop newStr
+        -- Tecla não reconhecida (ignora)
+        Nothing -> loop str
+
+    -- Função para tratar o Backspace
+    handleBackspace str
+      | null str = loop str  -- Se a string estiver vazia, não faz nada
+      | otherwise = do
+          -- Remove o último caractere da string
+          let newStr = init str
+          loop newStr
+
+    -- Função para converter Key em Char
+    keyToChar :: Key -> Maybe Char
+    keyToChar (KeyChar c) = Just c  -- Caracteres comuns
+    keyToChar key = case key of
+      KeyEnter -> Just '\n'  -- Enter
+      KeyBackspace -> Just '\DEL'  -- Backspace
+      _ -> Nothing  -- Outras teclas especiais (ignora)
+
+
+centralizarMensagem :: Int -> String -> Window -> IO ()
+centralizarMensagem linha msg window = do
+  (_, cols) <- scrSize
+  let x = (cols - length msg) `div` 2
+  mvWAddStr window linha x msg
+  wRefresh window
