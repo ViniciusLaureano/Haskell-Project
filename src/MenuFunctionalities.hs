@@ -4,6 +4,10 @@ import UI.HSCurses.Curses
 
 import WindowManipulation
 
+import Board 
+
+import Board 
+
 import Data.Aeson (encode, decode)
 
 import qualified Data.ByteString.Lazy as B
