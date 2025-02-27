@@ -52,7 +52,7 @@ tutorial window = do
 
 matchHistory :: Window -> IO ()
 matchHistory window = do
-  clearAndWriteScreen 0 0 "Not implemented yet" window
+  jsonData <- loadHistoryJSON
 
 getString :: Int -> Int -> Window -> IO String
 getString linha coluna window = loop ""
