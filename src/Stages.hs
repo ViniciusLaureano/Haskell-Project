@@ -13,13 +13,13 @@ stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) window =
   else do
     mostraJogador jogador nomeJogador1 nomeJogador2 window
 
-    cursor <- readPiece matriz (1, 1) window
+    cursor <- readPiece matriz (1, 1) jogador totJogadas False window
 
     if cursor == (-1, -1) then
       clearAndWriteScreen 0 0 "Save game" window
       -- save game de alexandre
     else do
-      let novaMatriz = markPosition matriz cursor jogador
+      (novaMatriz, _) <- markPosition matriz cursor jogador window
       stage1 novaMatriz (totJogadas + 1) ((jogador `mod` 2 + 1), nomeJogador1, nomeJogador2) window
 
 
