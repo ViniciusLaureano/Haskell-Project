@@ -6,6 +6,8 @@ import qualified Data.ByteString.Lazy as B
 
 import GameState (GameState(..), Phase(..))
 
+import Data.Maybe (fromMaybe)
+
 loadHistoryJSON :: IO B.ByteString
 loadHistoryJSON = B.readFile "json/saveHistory.json"
 

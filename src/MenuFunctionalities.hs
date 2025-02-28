@@ -11,6 +11,7 @@ import GameComponents
 import JsonManipulation
 import WindowManipulation
 import GameState (GameState(..), Phase(..))
+import HistoryShenanigans
 
 newGame :: Window -> IO ()
 newGame window = do
@@ -30,7 +31,7 @@ newGame window = do
   nomeJogador2 <- getString (centerRow + 4) colunaCentral window
 
 
-  stage1 matrizDefault 0 (1, nomeJogador1, nomeJogador2) window
+  stage1 matrizDefault 0 (1, nomeJogador1, nomeJogador2) False window
 
 
 continueGame :: Window -> IO ()
@@ -41,7 +42,7 @@ continueGame window = do
   case loadedGame of 
     Just state -> do
       let phaseFunc = gamePhase state
-      phaseFunc (gameBoard state) (rounds state) (players state) window
+      phaseFunc (gameBoard state) (rounds state) (players state) (isBot state) window
     Nothing -> clearAndWriteScreen 0 0 "Erro ao carregar jogo" window
 
 
@@ -53,6 +54,8 @@ tutorial window = do
 matchHistory :: Window -> IO ()
 matchHistory window = do
   jsonData <- loadHistoryJSON
+  clearAndWriteScreen 0 0 "Not implemented yet" window
+
 
 getString :: Int -> Int -> Window -> IO String
 getString linha coluna window = loop ""
@@ -86,7 +89,7 @@ getString linha coluna window = loop ""
       KeyBackspace -> Just '\DEL'
       _ -> Nothing
 
-gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
+gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Window -> IO ())
 gamePhase state
   | phase state == Phase1 = stage1
   | phase state == Phase2 = stage2
