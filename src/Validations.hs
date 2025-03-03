@@ -1,5 +1,7 @@
 module Validations (validateStage1, validateStage2, validateStage3, finishGame) where
 
+import JsonManipulation
+
 validateStage1 :: Int -> Bool
 validateStage1 totJogadas = totJogadas == 19
 
@@ -15,14 +17,17 @@ validateStage3 matriz = playerPieces matriz 1 == 2 || playerPieces matriz 2 == 2
 finishGame :: [[(Int, Int)]] -> Int -> (Int, String, String) -> IO ()
 finishGame matriz totJogadas (jogador, nomeJogador1, nomeJogador2) = do
   let winner = if playerPieces matriz 1 > playerPieces matriz 2 then 1 else 2
-
-  saveGameInHistory winner nomeJogador1 nomeJogador2
+  let finalState = GameState { gameBoard = matriz
+                             , rounds = totJogadas
+                             , players = (winner, nomeJogador1, nomeJogador2)
+                             , phase = Phase3
+                             , isBot = False }
+  saveGameInHistory finalState
 
 
 playerPieces :: [[(Int, Int)]] -> Int -> Int
 playerPieces matriz playerNumber = length [(x, y) | row <- matriz, (x, y) <- row, y == playerNumber]
 
 
-saveGameInHistory :: Int -> String -> String -> IO ()
-saveGameInHistory winner nomeJogador1 nomeJogador2 = do
-  putStrLn "not implemented yet"
+saveGameInHistory :: GameState -> IO ()
+saveGameInHistory gameState = saveFinalGameState gameState

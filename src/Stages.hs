@@ -25,7 +25,7 @@ stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) isBot window =
       , phase = Phase1
       , isBot = isBot
       }
-      saveGame state
+      saveToBeContinuedGame state
       clearAndWriteScreen 0 0 "Save game" window
     else do
       let novaMatriz = markPosition matriz cursor jogador

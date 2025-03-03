@@ -21,5 +21,5 @@ saveFinalGameState gameState = do
     B.writeFile "json/saveHistory.json" (encode updatedGames)
 
 
-saveGame :: GameState -> IO ()
+saveToBeContinuedGame :: GameState -> IO ()
 saveGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
