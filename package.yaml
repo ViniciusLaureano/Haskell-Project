@@ -24,6 +24,7 @@ dependencies:
 - hscurses
 - aeson
 - bytestring
+- random
 
 ghc-options:
 - -Wall

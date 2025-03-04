@@ -30,7 +30,7 @@ newGame window = do
   nomeJogador2 <- getString (centerRow + 4) colunaCentral window
 
 
-  stage1 matrizDefault 0 (1, nomeJogador1, nomeJogador2) window
+  stage1 matrizDefault 0 (1, nomeJogador1, nomeJogador2) False True window
 
 
 continueGame :: Window -> IO ()
@@ -41,7 +41,7 @@ continueGame window = do
   case loadedGame of 
     Just state -> do
       let phaseFunc = gamePhase state
-      phaseFunc (gameBoard state) (rounds state) (players state) window
+      phaseFunc (gameBoard state) (rounds state) (players state) (moinho state) (bot state) window
     Nothing -> clearAndWriteScreen 0 0 "Erro ao carregar jogo" window
 
 
@@ -86,7 +86,7 @@ getString linha coluna window = loop ""
       KeyBackspace -> Just '\DEL'
       _ -> Nothing
 
-gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Window -> IO ())
+gamePhase :: GameState -> ([[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ())
 gamePhase state
   | phase state == Phase1 = stage1
   | phase state == Phase2 = stage2

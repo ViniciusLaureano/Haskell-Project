@@ -1,9 +1,12 @@
-module Stage1Functions (readPiece, markPosition, mostraJogador) where
+module Stage1Functions (readPiece, moveCursor, isValidPosition, isMillFormed, selectOpponentPiece,
+                        selectOpponentPieceFromList, removeOpponentPiece, markPosition, mostraJogador) where
 
 import UI.HSCurses.Curses
 
 import Board
 import WindowManipulation
+import System.Random (randomRIO)
+import BotFunctions
 
 -- Função para verificar se a posição é válida
 isValidPosition :: [[(Int, Int)]] -> (Int, Int) -> Bool
@@ -32,26 +35,29 @@ moveCursor matriz (r, c) (dr, dc) =
 -- Função para marcar uma posição no tabuleiro
 markPosition :: [[(Int, Int)]] -> (Int, Int) -> Int -> Window -> IO ([[ (Int, Int) ]], Bool)
 markPosition board (r, c) jogador window = do
-  let newBoard = take r board ++ [take c (board !! r) ++ [(1, jogador)] ++ drop (c + 1) (board !! r)] ++ drop (r + 1) board
-  let moinhoAtual = isMillFormed newBoard (r, c) jogador  
-  let moinhoAntigo = isMillFormed board (r, c) jogador  
+  if board !! r !! c /= (1, 0) && board !! r !! c  /= (1, jogador) 
+    then return (board, False)  -- Não altera o tabuleiro se a posição estiver ocupada
+    else do
+      let newBoard = take r board ++ [take c (board !! r) ++ [(1, jogador)] ++ drop (c + 1) (board !! r)] ++ drop (r + 1) board
+      let moinhoAtual = isMillFormed newBoard (r, c) jogador  
+      let moinhoAntigo = isMillFormed board (r, c) jogador  
 
-  if moinhoAtual && not moinhoAntigo  
-    then do
-      let oponente = if jogador == 1 then 2 else 1
-      let todasPecasOponente = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
-      let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
+      if moinhoAtual && not moinhoAntigo  
+        then do
+          let oponente = if jogador == 1 then 2 else 1
+          let todasPecasOponente = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
+          let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
 
-      posToRemove <- if null pecasNaoMoinho  
-                     then selectOpponentPiece newBoard oponente window
-                     else selectOpponentPieceFromList newBoard oponente pecasNaoMoinho window
+          posToRemove <- if null pecasNaoMoinho  
+                        then selectOpponentPiece newBoard oponente window
+                        else selectOpponentPieceFromList newBoard oponente pecasNaoMoinho window
 
-      if posToRemove == (-1, -1)
-        then return (newBoard, True)  
-        else do
-          let updatedBoard = removeOpponentPiece newBoard posToRemove
-          return (updatedBoard, True)  
-    else return (newBoard, False)
+          if posToRemove == (-1, -1)
+            then return (newBoard, True)  
+            else do
+              let updatedBoard = removeOpponentPiece newBoard posToRemove
+              return (updatedBoard, True)  
+        else return (newBoard, False)
 
 -- Função para verificar se um moinho foi formado
 isMillFormed :: [[(Int, Int)]] -> (Int, Int) -> Int -> Bool
@@ -116,23 +122,23 @@ removeLoop board opponent cursor window = do
                    else removeLoop board opponent cursor window
     _ -> removeLoop board opponent cursor window
 
-readPiece :: [[(Int, Int)]] -> (Int, Int) -> Int -> Int -> Bool -> Window -> IO (Int, Int)
-readPiece matriz cursor jogador totJogadas moinhoFoiFeito window = do
+readPiece :: [[(Int, Int)]] -> (Int, Int) -> Int -> Int -> Bool -> Bool -> Window -> IO (Int, Int)
+readPiece matriz cursor jogador totJogadas moinhoFoiFeito bot window = do
   boardGenerate cursor matriz window
-  ev <- getCh
-  case ev of
-    KeyChar 'w' -> readPiece matriz (moveCursor matriz cursor (-1, 0)) jogador totJogadas moinhoFoiFeito window
-    KeyChar 's' -> readPiece matriz (moveCursor matriz cursor (1, 0)) jogador totJogadas moinhoFoiFeito window
-    KeyChar 'a' -> readPiece matriz (moveCursor matriz cursor (0, -1)) jogador totJogadas moinhoFoiFeito window
-    KeyChar 'd' -> readPiece matriz (moveCursor matriz cursor (0, 1)) jogador totJogadas moinhoFoiFeito window
-    KeyChar '\n' -> do
-        (newMatriz, moinhoAtual) <- markPosition matriz cursor jogador window
-        let proximoJogador = if jogador == 1 then 2 else 1
-        if newMatriz /= matriz
-           then readPiece newMatriz cursor proximoJogador (totJogadas + 1) False window
-           else readPiece matriz cursor jogador totJogadas False window
-    KeyChar 'q' -> return (-1, -1)
-    _ -> readPiece matriz cursor jogador totJogadas moinhoFoiFeito window
+  if bot && jogador == 2
+    then do
+      botCursor <- findPlace matriz
+      return botCursor
+  else do
+    ev <- getCh
+    case ev of
+      KeyChar 'w' -> readPiece matriz (moveCursor matriz cursor (-1, 0)) jogador totJogadas moinhoFoiFeito bot window
+      KeyChar 's' -> readPiece matriz (moveCursor matriz cursor (1, 0)) jogador totJogadas moinhoFoiFeito bot window
+      KeyChar 'a' -> readPiece matriz (moveCursor matriz cursor (0, -1)) jogador totJogadas moinhoFoiFeito bot window
+      KeyChar 'd' -> readPiece matriz (moveCursor matriz cursor (0, 1)) jogador totJogadas moinhoFoiFeito bot window
+      KeyChar '\n' -> return cursor
+      KeyChar 'q' -> return (-1, -1)
+      _ -> readPiece matriz cursor jogador totJogadas moinhoFoiFeito bot window
 
 
 mostraJogador :: Int -> String -> String -> Window -> IO ()
