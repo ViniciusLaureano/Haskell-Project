@@ -8,7 +8,21 @@ import Board
 
 import GameComponents
 
+import Stage1Functions
+
 matriz = matrizDefault
+
+
+matrizExemplo::[[(Int, Int)]]
+matrizExemplo = [[(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)],
+  [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 1), (-1, -1)],
+  [(-1, -1), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (1, 2), (0, 0), (-1, -1)],
+  [(-1, -1), (0, 0), (0, 0), (1, 2), (1, 2), (1, 1), (0, 0), (0, 0), (-1, -1)],
+  [(-1, -1), (1, 2), (1, 2), (1, 1), (-1, -1), (1, 1), (1, 2), (1, 2), (-1, -1)],
+  [(-1, -1), (0, 0), (0, 0), (1, 1), (1, 1), (1, 2), (0, 0), (0, 0), (-1, -1)],
+  [(-1, -1), (0, 0), (1, 2), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (-1, -1)],
+  [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 2), (-1, -1)],
+  [(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)]]
 
 startTutorial :: Window -> IO()
 startTutorial window = do
@@ -81,12 +95,29 @@ downMove matriz window (y, x) = do
 
 makeMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 makeMove matriz window (y, x)= do
-  clearAndWriteScreen 10 60 "Aperte ENTER para colocar uma peça na posição do cursor cursor" window
+  clearAndWriteScreen 10 60 "Aperte ENTER para colocar uma peça na posição do cursor" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
-  boardGenerate (2, 4) matriz window
+  boardGenerate (y, x) matriz window
   key <- getCh
   case key of
-    KeyChar '\n' -> makeMove matriz window (1, 4)
+    KeyChar '\n' -> do
+      let updateMatriz = markPosition matriz (2, 4) 1
+      makeMove updateMatriz window (1, 4)
     KeyLeft -> downMove matriz window (1, 4)
-    _ -> return ()
+    KeyRight -> intermission matriz window 
+    KeyChar 'q' -> return ()
+    _ -> makeMove matriz window (1, 4)
+
+intermission :: [[(Int, Int)]] -> Window -> IO()
+intermission matriz window = do
+  clearAndWriteScreen 4 60 "Agora que você já sabe as movimentações vamos demonstrar uma situação real de jogo" window
+  let updateMatriz = matrizExemplo
+  boardGenerate (1, 1) updateMatriz window
+  key <- getCh
+  case key of
+    KeyRight -> return ()
+    KeyLeft -> makeMove matriz window (2, 4)
+    KeyChar 'q' -> return ()
+    _ -> intermission matriz window
+
