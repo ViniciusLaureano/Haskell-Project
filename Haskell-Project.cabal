@@ -34,6 +34,8 @@ library
       Menu
       MenuFunctionalities
       Stage1Functions
+      Stage2Functions
+      Stage3Functions
       Stages
       Tutorial
       Validations
@@ -50,6 +52,7 @@ library
     , base >=4.7 && <5
     , bytestring
     , hscurses
+    , random
   default-language: Haskell2010
 
 executable Haskell-Project-exe
@@ -67,6 +70,7 @@ executable Haskell-Project-exe
     , base >=4.7 && <5
     , bytestring
     , hscurses
+    , random
   default-language: Haskell2010
 
 test-suite Haskell-Project-test
@@ -85,4 +89,5 @@ test-suite Haskell-Project-test
     , base >=4.7 && <5
     , bytestring
     , hscurses
+    , random
   default-language: Haskell2010
