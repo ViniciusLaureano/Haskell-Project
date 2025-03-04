@@ -25,7 +25,7 @@ stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window
       , rounds = totJogadas
       , players = (jogador, nomeJogador1, nomeJogador2)
       , phase = Phase1
-      , isBot = isBot
+      , bot = True
       }
       saveToBeContinuedGame state
       clearAndWriteScreen 0 0 "Save game" window

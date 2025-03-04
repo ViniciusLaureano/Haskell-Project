@@ -23,7 +23,7 @@ finishGame matriz totJogadas (jogador, nomeJogador1, nomeJogador2) = do
                              , rounds = totJogadas
                              , players = (winner, nomeJogador1, nomeJogador2)
                              , phase = Phase3
-                             , isBot = False }
+                             , bot = False }
   saveGameInHistory finalState
 
 

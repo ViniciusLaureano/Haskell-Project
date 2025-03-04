@@ -19,7 +19,7 @@ showGameHistory [] = putStrLn "No game history available."
 showGameHistory states = showGames states 1
   where
     showGames [] _ = return ()
-    showGames (GameState board _ (playerNum, p1, p2) _ _ : rest) index = do
+    showGames (GameState board _ (playerNum, p1, p2) _ _ _ : rest) index = do
       let winner = if playerNum == 1 then p1 else p2
       putStrLn $ "Game #" ++ show index
       putStrLn $ "Players: " ++ p1 ++ " vs " ++ p2

@@ -23,11 +23,26 @@ matrizExemplo = [[(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-
   [(-1, -1), (0, 0), (1, 2), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (-1, -1)],
   [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 2), (-1, -1)],
   [(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)]]
-
 startTutorial :: Window -> IO()
 startTutorial window = do
+  clearAndWriteScreen 3 30 "O Nine Men's Morris (também conhecido como 'Moinho' ou 'Jogo do Moinho') é um jogo de estratégia" window
+  writeScreen 4 30 "antigo e clássico para dois jogadores. O objetivo do jogo é formar 'moinhos' (linhas de três peças) para capturar" window
+  writeScreen 5 30 "as peças do oponente. O jogo é dividido em três fases: colocação de peças, movimentação de peças e fase final" window
+  writeScreen 6 30 "(quando um jogador tem apenas três peças)." window
+  writeScreen 11 100 "➡ para avançar " window
+  writeScreen 13 100 "q para sair do tutorial" window
+  key <- getCh
+  case key of
+    KeyRight -> firstStep window
+    KeyChar 'q' -> return ()
+    _ -> startTutorial window
+
+firstStep :: Window -> IO()
+firstStep window = do
   clearAndWriteScreen 4 60 "Esse será o seu tabuleiro durante o jogo se familiarize com ele :) " window
   writeScreen 11 100 "➡ para avançar " window
+  writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (2, 4) matriz window
   key <- getCh
   case key of
@@ -35,13 +50,13 @@ startTutorial window = do
     KeyChar 'q' -> return() 
     _ -> startTutorial window
     
-
 upMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 upMove matriz window (y, x) = do
   clearAndWriteScreen 4 60 "W A S D será a sua movimentação durante o jogo" window
   writeScreen 10 60 "Teste apertando W pra mover o cursor para cima" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (y, x) matriz window
   key <- getCh
   case key of
@@ -56,6 +71,7 @@ rightMove matriz window (y, x) = do
   clearAndWriteScreen 10 60 "Aperte D para mover o cursor para a direita" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (y, x) matriz window
   key <- getCh
   case key of
@@ -70,6 +86,7 @@ leftMove matriz window (y, x) = do
   clearAndWriteScreen 10 60 "Aperte A para mover o cursor para a esquerda" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (y, x) matriz window
   key <- getCh
   case key of
@@ -84,6 +101,7 @@ downMove matriz window (y, x) = do
   clearAndWriteScreen 10 60 "Aperte S para mover o cursor para baixo" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (y, x) matriz window
   key <- getCh
   case key of
@@ -98,11 +116,12 @@ makeMove matriz window (y, x)= do
   clearAndWriteScreen 10 60 "Aperte ENTER para colocar uma peça na posição do cursor" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   boardGenerate (y, x) matriz window
   key <- getCh
   case key of
     KeyChar '\n' -> do
-      let updateMatriz = markPosition matriz (2, 4) 1
+      (updateMatriz, _) <- markPosition matriz (2, 4) 1 False window
       makeMove updateMatriz window (1, 4)
     KeyLeft -> downMove matriz window (1, 4)
     KeyRight -> intermission matriz window 
@@ -120,4 +139,5 @@ intermission matriz window = do
     KeyLeft -> makeMove matriz window (2, 4)
     KeyChar 'q' -> return ()
     _ -> intermission matriz window
+
 
