@@ -7,6 +7,7 @@ import qualified Data.ByteString.Lazy as B
 
 import Board 
 import Stages
+import Tutorial
 import GameComponents
 import JsonManipulation
 import WindowManipulation
@@ -47,7 +48,7 @@ continueGame window = do
 
 tutorial :: Window -> IO ()
 tutorial window = do
-  clearAndWriteScreen 0 0 "Not implemented yet" window
+  startTutorial window
 
 
 matchHistory :: Window -> IO ()
