@@ -8,7 +8,6 @@ import MenuFunctionalities
 mainMenu :: Int -> Window -> IO ()
 mainMenu selectedIndex window = do
   (rows, cols) <- scrSize
-  wclear window 
 
   let titlePosition = (rows `div` 2 - 4, (cols - length title) `div` 2)
 
@@ -28,12 +27,10 @@ mainMenu selectedIndex window = do
     (KeyChar 's') -> mainMenu (min (length menuOptions - 1) (selectedIndex + 1)) window
     (KeyChar '\n') -> handleSelection selectedIndex window
     _ -> mainMenu selectedIndex window
-    
-    
 
   where
     title = "Nine Men Morris"
-    options = (zip [0..] menuOptions)
+    options = zip [0..] menuOptions
 
 
 menuOptions :: [String]

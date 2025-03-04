@@ -1,4 +1,4 @@
-module MenuFunctionalities (newGame, continueGame, saveGame, tutorial, matchHistory) where
+module MenuFunctionalities (newGame, continueGame, tutorial, matchHistory) where
 
 import UI.HSCurses.Curses
 import Data.Aeson (encode, decode)
@@ -20,7 +20,7 @@ newGame window = do
 
   clearAndWriteScreenCenter (centerRow - 2) "Bem-vindo ao Nine Men's Morris!" window
 
-  threadDelay 1000000
+  threadDelay 500000
 
   writeScreenCenter centerRow "Digite o nome do Jogador 1: " window
 

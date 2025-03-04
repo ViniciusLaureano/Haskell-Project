@@ -1,4 +1,4 @@
-module JsonManipulation (saveFinalGameState, saveGame) where
+module JsonManipulation (saveFinalGameState, saveToBeContinuedGame) where
 
 import GameState (GameState(..), Phase(..))
 import qualified Data.ByteString.Lazy as B
@@ -22,4 +22,4 @@ saveFinalGameState gameState = do
 
 
 saveToBeContinuedGame :: GameState -> IO ()
-saveGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
+saveToBeContinuedGame gameState = B.writeFile "json/saveGame.json" (encode gameState)

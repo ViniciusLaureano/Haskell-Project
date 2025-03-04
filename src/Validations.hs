@@ -1,6 +1,8 @@
 module Validations (validateStage1, validateStage2, validateStage3, finishGame) where
 
 import JsonManipulation
+import GameState (GameState(..), Phase(..))
+
 
 validateStage1 :: Int -> Bool
 validateStage1 totJogadas = totJogadas == 19
