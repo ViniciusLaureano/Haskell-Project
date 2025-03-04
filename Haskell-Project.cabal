@@ -35,6 +35,7 @@ library
       MenuFunctionalities
       Stage1Functions
       Stage2Functions
+      Stage3Functions
       Stages
       Tutorial
       Validations

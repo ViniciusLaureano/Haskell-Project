@@ -1,42 +1,42 @@
 module Stage1Functions (readPiece, moveCursor, isValidPosition, isMillFormed, selectOpponentPiece,
-                        selectOpponentPieceFromList, removeOpponentPiece, markPosition, mostraJogador) where
+                        selectOpponentPieceFromList, removeOpponentPiece, markPosition, mostraJogador,
+                        findValidPosition) where
 
 import UI.HSCurses.Curses
-
 import Board
 import WindowManipulation
 import System.Random (randomRIO)
 import BotFunctions
 
--- Função para verificar se a posição é válida
+
 isValidPosition :: [[(Int, Int)]] -> (Int, Int) -> Bool
 isValidPosition matriz (r, c) =
   let (v, _) = matriz !! r !! c
   in v == 1
 
--- Função para checar se a posição está fora do tabuleiro
+
 isOutOfBounds :: [[(Int, Int)]] -> (Int, Int) -> Bool
 isOutOfBounds matriz (r, c) =
   r < 0 || r >= length matriz || c < 0 || c >= length (head matriz) || matriz !! r !! c == (-1, -1)
 
--- Função que encontra a próxima posição válida
+
 findValidPosition :: [[(Int, Int)]] -> (Int, Int) -> (Int, Int) -> (Int, Int)
 findValidPosition matriz (r, c) (dr, dc)
-  | isOutOfBounds matriz (r, c) = (r - dr, c - dc)  -- Para antes de sair
-  | isValidPosition matriz (r, c) = (r, c)  -- Encontrou posição válida
-  | otherwise = findValidPosition matriz (r + dr, c + dc) (dr, dc)  -- Continua movendo
+  | isOutOfBounds matriz (r, c) = (r - dr, c - dc)
+  | isValidPosition matriz (r, c) = (r, c)
+  | otherwise = findValidPosition matriz (r + dr, c + dc) (dr, dc)
 
--- Função para mover o cursor
+
 moveCursor :: [[(Int, Int)]] -> (Int, Int) -> (Int, Int) -> (Int, Int)
 moveCursor matriz (r, c) (dr, dc) =
   let newPos = findValidPosition matriz (r + dr, c + dc) (dr, dc)
   in if isValidPosition matriz newPos then newPos else (r, c)
 
--- Função para marcar uma posição no tabuleiro
-markPosition :: [[(Int, Int)]] -> (Int, Int) -> Int -> Window -> IO ([[ (Int, Int) ]], Bool)
-markPosition board (r, c) jogador window = do
+
+markPosition :: [[(Int, Int)]] -> (Int, Int) -> Int -> Bool -> Window -> IO ([[ (Int, Int) ]], Bool)
+markPosition board (r, c) jogador bot window = do
   if board !! r !! c /= (1, 0) && board !! r !! c  /= (1, jogador) 
-    then return (board, False)  -- Não altera o tabuleiro se a posição estiver ocupada
+    then return (board, False)
     else do
       let newBoard = take r board ++ [take c (board !! r) ++ [(1, jogador)] ++ drop (c + 1) (board !! r)] ++ drop (r + 1) board
       let moinhoAtual = isMillFormed newBoard (r, c) jogador  
@@ -48,9 +48,14 @@ markPosition board (r, c) jogador window = do
           let todasPecasOponente = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
           let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
 
-          posToRemove <- if null pecasNaoMoinho  
-                        then selectOpponentPiece newBoard oponente window
-                        else selectOpponentPieceFromList newBoard oponente pecasNaoMoinho window
+          posToRemove <- if bot && jogador == 2
+            then do
+              if null pecasNaoMoinho  
+                then return (head todasPecasOponente)
+                else return (head pecasNaoMoinho)
+            else if null pecasNaoMoinho  
+                then selectOpponentPiece newBoard oponente window
+                else selectOpponentPieceFromList newBoard oponente pecasNaoMoinho window
 
           if posToRemove == (-1, -1)
             then return (newBoard, True)  
@@ -59,7 +64,7 @@ markPosition board (r, c) jogador window = do
               return (updatedBoard, True)  
         else return (newBoard, False)
 
--- Função para verificar se um moinho foi formado
+
 isMillFormed :: [[(Int, Int)]] -> (Int, Int) -> Int -> Bool
 isMillFormed board (r, c) jogador =
   let checkMill [(x1, y1), (x2, y2), (x3, y3)] =
@@ -76,7 +81,7 @@ isMillFormed board (r, c) jogador =
         ]
   in any (\mill -> (r, c) `elem` mill && checkMill mill) mills
 
--- Função para remover uma peça do oponente
+
 removeOpponentPiece :: [[(Int, Int)]] -> (Int, Int) -> [[(Int, Int)]]
 removeOpponentPiece board (r, c) =
   let (tipo, marker) = board !! r !! c
@@ -86,7 +91,7 @@ removeOpponentPiece board (r, c) =
           ++ drop (r + 1) board
      else board
 
--- Função para permitir que o jogador escolha uma peça do oponente para remover
+
 selectOpponentPiece :: [[(Int, Int)]] -> Int -> Window -> IO (Int, Int)
 selectOpponentPiece board opponent window = do
   let opponentPieces = [(r, c) | r <- [0..8], c <- [0..8], isValidPosition board (r, c), snd (board !! r !! c) == opponent]
@@ -95,6 +100,7 @@ selectOpponentPiece board opponent window = do
     else do
       let (initialR, initialC) = head opponentPieces
       removeLoop board opponent (initialR, initialC) window
+
 
 selectOpponentPieceFromList :: [[(Int, Int)]] -> Int -> [(Int, Int)] -> Window -> IO (Int, Int)
 selectOpponentPieceFromList board jogador allowedPositions window = do
@@ -107,7 +113,7 @@ selectOpponentPieceFromList board jogador allowedPositions window = do
         else do
           selectOpponentPieceFromList board jogador allowedPositions window
 
--- Loop para selecionar a peça do oponente a ser removida
+
 removeLoop :: [[(Int, Int)]] -> Int -> (Int, Int) -> Window -> IO (Int, Int)
 removeLoop board opponent cursor window = do
   boardGenerate cursor board window
@@ -121,6 +127,7 @@ removeLoop board opponent cursor window = do
                    then return cursor
                    else removeLoop board opponent cursor window
     _ -> removeLoop board opponent cursor window
+
 
 readPiece :: [[(Int, Int)]] -> (Int, Int) -> Int -> Int -> Bool -> Bool -> Window -> IO (Int, Int)
 readPiece matriz cursor jogador totJogadas moinhoFoiFeito bot window = do
