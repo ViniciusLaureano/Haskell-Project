@@ -5,7 +5,7 @@ import GameState (GameState(..), Phase(..))
 
 
 validateStage1 :: Int -> Bool
-validateStage1 totJogadas = totJogadas == 19
+validateStage1 totRounds = totRounds == 19
 
 
 validateStage2 :: [[(Int, Int)]] -> Bool
@@ -17,11 +17,11 @@ validateStage3 matriz = playerPieces matriz 1 == 2 || playerPieces matriz 2 == 2
 
 
 finishGame :: [[(Int, Int)]] -> Int -> (Int, String, String) -> IO ()
-finishGame matriz totJogadas (jogador, nomeJogador1, nomeJogador2) = do
+finishGame matriz totRounds (jogador, nickname1, nickname2) = do
   let winner = if playerPieces matriz 1 > playerPieces matriz 2 then 1 else 2
   let finalState = GameState { gameBoard = matriz
-                             , rounds = totJogadas
-                             , players = (winner, nomeJogador1, nomeJogador2)
+                             , rounds = totRounds
+                             , players = (winner, nickname1, nickname2)
                              , phase = Phase3
                              , bot = False }
   saveGameInHistory finalState

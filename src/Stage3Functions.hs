@@ -34,8 +34,8 @@ movePieceStageThree board (r1, c1) (r2, c2) jogador bot window = do
 
           if isMillFormed boardWithPiece (r2, c2) jogador
             then do
-              (updatedBoard, moinho) <- handleMillRemoval boardWithPiece jogador bot window
-              return (updatedBoard, moinho)
+              (updatedBoard, mill) <- handleMillRemoval boardWithPiece jogador bot window
+              return (updatedBoard, mill)
             else return (boardWithPiece, False)
 
 

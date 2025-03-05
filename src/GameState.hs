@@ -11,7 +11,7 @@ data GameState = GameState
   , rounds :: Int
   , players :: (Int, String, String)
   , phase :: Phase
-  , moinho :: Bool
+  , mill :: Bool
   , bot :: Bool
   } deriving (Show, Generic)
 
