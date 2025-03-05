@@ -40,7 +40,7 @@ stage1 matriz totRounds (player, nickname1, nickname2) mill bot window =
 
 stage2 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
 stage2 matriz totRounds (player, nickname1, nickname2) mill bot window = 
-  if validateStage2 matriz 
+  if validateStage2 matriz player
     then stage3 matriz totRounds (player, nickname1, nickname2) mill bot window
   else do
     showPlayer player nickname1 nickname2 window
@@ -72,32 +72,35 @@ stage2 matriz totRounds (player, nickname1, nickname2) mill bot window =
 
 stage3 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
 stage3 matriz totRounds (player, nickname1, nickname2) mill bot window = 
-  if validateStage3 matriz 
-    then finishGame matriz totRounds (player, nickname1, nickname2)
-  else do
-    showPlayer player nickname1 nickname2 window
-    writeScreenCenter 0 "Fase 3" window
-    writeScreen 0 0 ("Rodada: " ++ (show totRounds)) window
-
-    if bot && player == 2
-      then do
-      (newMatriz, _) <- botMove matriz player window
-      stage3 newMatriz (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) mill bot window
+  if playerPieces matriz player > 3
+    then stage2 matriz totRounds (player, nickname1, nickname2) mill bot window
     else do
-      (r1, c1) <- readPiece3 matriz (1, 1) player bot window
-      if (r1, c1) == (-1, -1) then 
-        saveToBeContinuedGame GameState { 
-          gameBoard = matriz
-          , rounds = totRounds
-          , players = (player, nickname1, nickname2)
-          , phase = Phase1
-          , mill = mill
-          , bot = bot
-        }
+      if validateStage3 matriz 
+        then finishGame matriz totRounds (player, nickname1, nickname2)
+      else do
+        showPlayer player nickname1 nickname2 window
+        writeScreenCenter 0 "Fase 3" window
+        writeScreen 0 0 ("Rodada: " ++ (show totRounds)) window
+
+        if bot && player == 2
+          then do
+          (newMatriz, _) <- botMove matriz player window
+          stage3 newMatriz (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) mill bot window
         else do
-        (r2, c2) <- readPiece3 matriz (r1, c1) player bot window
-        (newMatriz, currentMill) <- movePieceStageThree matriz (r1, c1) (r2, c2) player bot window
-        if newMatriz /= matriz 
-          then stage3 newMatriz (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) currentMill bot window
-        else
-          stage3 newMatriz totRounds (player, nickname1, nickname2) currentMill bot window
+          (r1, c1) <- readPiece3 matriz (1, 1) player bot window
+          if (r1, c1) == (-1, -1) then 
+            saveToBeContinuedGame GameState { 
+              gameBoard = matriz
+              , rounds = totRounds
+              , players = (player, nickname1, nickname2)
+              , phase = Phase1
+              , mill = mill
+              , bot = bot
+            }
+            else do
+            (r2, c2) <- readPiece3 matriz (r1, c1) player bot window
+            (newMatriz, currentMill) <- movePieceStageThree matriz (r1, c1) (r2, c2) player bot window
+            if newMatriz /= matriz 
+              then stage3 newMatriz (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) currentMill bot window
+            else
+              stage3 newMatriz totRounds (player, nickname1, nickname2) currentMill bot window

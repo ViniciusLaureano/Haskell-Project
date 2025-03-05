@@ -1,4 +1,4 @@
-module Validations (validateStage1, validateStage2, validateStage3, finishGame) where
+module Validations (validateStage1, validateStage2, validateStage3, finishGame, playerPieces) where
 
 import JsonManipulation
 import GameState (GameState(..), Phase(..))
@@ -8,8 +8,8 @@ validateStage1 :: Int -> Bool
 validateStage1 totRounds = totRounds == 19
 
 
-validateStage2 :: [[(Int, Int)]] -> Bool
-validateStage2 matriz = playerPieces matriz 1 == 3 || playerPieces matriz 2 == 3
+validateStage2 :: [[(Int, Int)]] -> Int -> Bool
+validateStage2 matriz jogador = playerPieces matriz jogador <= 3
 
 
 validateStage3 :: [[(Int, Int)]] -> Bool
