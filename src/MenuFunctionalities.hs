@@ -8,9 +8,9 @@ import qualified Data.ByteString.Lazy as B
 import Stages
 import Tutorial
 import GameComponents
+import HistoryShenanigans
 import WindowManipulation
 import GameState (GameState(..), Phase(..))
-import HistoryShenanigans
 
 newGame :: Window -> IO ()
 newGame window = do
@@ -35,7 +35,7 @@ newGame window = do
 
   nickname2 <- getString (centerRow + 4) centerColumn window
 
-  stage1 matrizDefault 0 (1, nickname1, nickname2) False isBot window
+  stage1 matrizDefault 1 (1, nickname1, nickname2) False isBot window
 
   where
     againstBot :: Int -> Window -> IO Bool
@@ -57,7 +57,7 @@ continueGame window = do
   case loadedGame of 
     Just state -> do
       let phaseFunc = gamePhase state
-      phaseFunc (gameBoard state) (rounds state) (players state) (moinho state) (bot state) window
+      phaseFunc (gameBoard state) (rounds state) (players state) (mill state) (bot state) window
     Nothing -> clearAndWriteScreen 0 0 "Erro ao carregar jogo" window
 
 
