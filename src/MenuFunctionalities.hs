@@ -5,11 +5,9 @@ import Data.Aeson (encode, decode)
 import Control.Concurrent (threadDelay)
 import qualified Data.ByteString.Lazy as B
 
-import Board 
 import Stages
 import Tutorial
 import GameComponents
-import JsonManipulation
 import WindowManipulation
 import GameState (GameState(..), Phase(..))
 import HistoryShenanigans
@@ -23,17 +21,33 @@ newGame window = do
 
   threadDelay 500000
 
-  writeScreenCenter centerRow "Digite o nome do Jogador 1: " window
+  isBot <- againstBot centerRow window
 
-  let colunaCentral = (cols - length "Digite o nome do Jogador 1: ") `div` 2
-  nomeJogador1 <- getString (centerRow + 1) colunaCentral window
+  clearAndWriteScreenCenter centerRow "Digite o nome do Jogador 1: " window
 
-  writeScreenCenter (centerRow + 3) "Digite o nome do Jogador 2: " window
-  nomeJogador2 <- getString (centerRow + 4) colunaCentral window
+  let centerColumn = (cols - length "Digite o nome do Jogador 1: ") `div` 2
+  nickname1 <- getString (centerRow + 1) centerColumn window
 
+  if isBot then
+    writeScreenCenter (centerRow + 3) "Digite o nome do Bot:" window
+  else
+    writeScreenCenter (centerRow + 3) "Digite o nome do Jogador 2: " window
 
-  stage1 matrizDefault 0 (1, nomeJogador1, nomeJogador2) False True window
+  nickname2 <- getString (centerRow + 4) centerColumn window
 
+  stage1 matrizDefault 0 (1, nickname1, nickname2) False isBot window
+
+  where
+    againstBot :: Int -> Window -> IO Bool
+    againstBot centerRow window = do
+        writeScreenCenter centerRow "Digite 1 para o modo PvP ou 2 para PvE" window
+        ch <- getCh
+        verifyOption centerRow ch window
+
+    verifyOption :: Int -> Key -> Window -> IO Bool
+    verifyOption _ (KeyChar '1') _ = return False
+    verifyOption _ (KeyChar '2') _ = return True
+    verifyOption centerRow _ window = againstBot centerRow window
 
 continueGame :: Window -> IO ()
 continueGame window = do
@@ -61,12 +75,11 @@ matchHistory window = do
 
 
 getString :: Int -> Int -> Window -> IO String
-getString linha coluna window = loop ""
+getString row column window = loop ""
   where
     loop str = do
-      mvWAddStr window linha coluna (str ++ replicate (50 - length str) ' ')
-      mvWAddStr window linha coluna str
-
+      writeScreen row column (str ++ replicate (50 - length str) ' ') window
+      writeScreen row column str window
       ch <- getCh
       case keyToChar ch of
         Just '\n' -> return str
@@ -78,6 +91,7 @@ getString linha coluna window = loop ""
           let newStr = str ++ [c]
           loop newStr
         Nothing -> loop str
+
 
     handleBackspace str
       | null str = loop str
