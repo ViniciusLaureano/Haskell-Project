@@ -76,7 +76,7 @@ stage3 matriz totRounds (player, nickname1, nickname2) mill bot window =
     then stage2 matriz totRounds (player, nickname1, nickname2) mill bot window
     else do
       if validateStage3 matriz 
-        then finishGame matriz totRounds (player, nickname1, nickname2)
+        then finishGame matriz totRounds (player, nickname1, nickname2) bot window
       else do
         showPlayer player nickname1 nickname2 window
         writeScreenCenter 0 "Fase 3" window

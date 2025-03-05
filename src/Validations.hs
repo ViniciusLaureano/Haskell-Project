@@ -2,6 +2,7 @@ module Validations (validateStage1, validateStage2, validateStage3, finishGame, 
 
 import JsonManipulation
 import GameState (GameState(..), Phase(..))
+import UI.HSCurses.Curses
 
 
 validateStage1 :: Int -> Bool
@@ -16,20 +17,18 @@ validateStage3 :: [[(Int, Int)]] -> Bool
 validateStage3 matriz = playerPieces matriz 1 == 2 || playerPieces matriz 2 == 2
 
 
-finishGame :: [[(Int, Int)]] -> Int -> (Int, String, String) -> IO ()
-finishGame matriz totRounds (jogador, nickname1, nickname2) = do
+finishGame :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Window -> IO ()
+finishGame matriz totRounds (jogador, nickname1, nickname2) bot window = do
   let winner = if playerPieces matriz 1 > playerPieces matriz 2 then 1 else 2
-  let finalState = GameState { gameBoard = matriz
-                             , rounds = totRounds
-                             , players = (winner, nickname1, nickname2)
-                             , phase = Phase3
-                             , bot = False }
-  saveGameInHistory finalState
+  saveFinalGameState GameState { 
+                              gameBoard = matriz
+                              , rounds = totRounds
+                              , players = (winner, nickname1, nickname2)
+                              , phase = Phase3
+                              , mill = True
+                              , bot = bot } window
 
 
 playerPieces :: [[(Int, Int)]] -> Int -> Int
 playerPieces matriz playerNumber = length [(x, y) | row <- matriz, (x, y) <- row, y == playerNumber]
 
-
-saveGameInHistory :: GameState -> IO ()
-saveGameInHistory gameState = saveFinalGameState gameState

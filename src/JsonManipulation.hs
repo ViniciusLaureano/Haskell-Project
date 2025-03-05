@@ -1,25 +1,35 @@
 module JsonManipulation (saveFinalGameState, saveToBeContinuedGame) where
 
 import GameState (GameState(..), Phase(..))
+import GameHistoryList (GameHistoryList(..))
 import qualified Data.ByteString.Lazy as B
 import Data.Aeson (encode, decode)
 import Data.Maybe (fromMaybe)
 
-saveFinalGameState :: GameState -> IO()
-saveFinalGameState gameState = do
+import UI.HSCurses.Curses
+import WindowManipulation
+
+saveFinalGameState :: GameState -> Window -> IO ()
+saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
-    existingData <- B.readFile "json/saveHistory.json"
+  existingData <- B.readFile "json/saveHistory.json"
+    
 
-    -- Decode existing JSON array or default to an empty list
-    let existingGames :: [GameState]
-        existingGames = fromMaybe [] (decode existingData)
+  -- Decodificar o JSON ou criar uma lista vazia caso falhe
+  let existingGames = case decode existingData of
+          Just (GameHistoryList games) -> games
+          Nothing -> []
 
-    -- Append the new game state
-    let updatedGames = existingGames ++ [gameState]
+  -- Atualizar lista com o novo estado do jogo
+  let updatedGames = GameHistoryList (existingGames ++ [gameState])
+  -- clearAndWriteScreenCenter 0 (show (updatedGames)) window
+  clearAndWriteScreenCenter 0 "Partida Finalisada!" window
+  writeScreenCenter 1 "(aperte qualquer tecla para continuar)" window
+  ch <- getCh
 
-    -- Write the updated array back to the file
-    B.writeFile "json/saveHistory.json" (encode updatedGames)
-
+  -- Salvar no arquivo
+  B.writeFile "json/saveHistory.json" (encode updatedGames)
+      
 
 saveToBeContinuedGame :: GameState -> IO ()
 saveToBeContinuedGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
