@@ -45,7 +45,7 @@ markPosition board (r, c) player bot window = do
         then do
           let oponent = if player == 1 then 2 else 1
           let allOpponentPieces = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponent]
-          let piecesNotInMill = filter (\pos -> not (isMillFormed board pos oponent)) allOpponentPiecese
+          let piecesNotInMill = filter (\pos -> not (isMillFormed board pos oponent)) allOpponentPieces
 
           posToRemove <- if bot && player == 2
             then do

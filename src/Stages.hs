@@ -60,14 +60,14 @@ stage2 matrix totRounds (player, nickname1, nickname2) mill bot window =
       }
     else do    
       let newBoard = movePiece matrix (r1, c1) (r2, c2) player
-      let millFormado = isMillFormed newBoard (r2, c2) player
+      let formedMill = isMillFormed newBoard (r2, c2) player
 
-      (finalBoard, millAtivo) <- if millFormado
+      (finalBoard, activeMill) <- if formedMill
 
         then handleMillRemoval newBoard player bot window
         else return (newBoard, False)
 
-      stage2 finalBoard (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) millAtivo bot window
+      stage2 finalBoard (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) activeMill bot window
 
 
 stage3 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
