@@ -128,9 +128,6 @@ Após a instalação, confirme que tudo está funcionando executando:
  cabal --version  # Verificar versão do Cabal
  stack --version  # Verificar versão do Stack
 ```
-
-Boa programação em Haskell! 🚀
-
 ---
 ## **Instalando Jogo**
 
