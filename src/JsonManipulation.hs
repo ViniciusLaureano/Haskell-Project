@@ -2,7 +2,8 @@ module JsonManipulation (saveFinalGameState, saveToBeContinuedGame) where
 
 import GameState (GameState(..), Phase(..))
 import GameHistoryList (GameHistoryList(..))
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BL
 import Data.Aeson (encode, decode)
 import Data.Maybe (fromMaybe)
 import System.IO (withFile, openFile, hClose, IOMode(ReadMode), IOMode(WriteMode))
@@ -13,11 +14,10 @@ import WindowManipulation
 saveFinalGameState :: GameState -> Window -> IO ()
 saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
-  existingData <- withFile "json/saveHistory.json" ReadMode $ \handle -> do
-    B.hGetContents handle
+  existingData <- BS.readFile "json/saveHistory.json"
   
   -- Decode the JSON or create an empty list if that fails
-  let existingGames = case decode existingData of
+  let existingGames = case decode (BL.fromStrict existingData) of
           Just (GameHistoryList games) -> games
           Nothing -> []
 
@@ -33,8 +33,8 @@ fileSaver :: GameHistoryList -> IO()
 fileSaver updatedGames = do
   -- Use 'withFile' to ensure the handle is properly managed
   withFile "json/saveHistory.json" WriteMode $ \handle -> do
-    B.hPut handle (encode updatedGames)
+    BL.hPut handle (encode updatedGames)
       
 
 saveToBeContinuedGame :: GameState -> IO ()
-saveToBeContinuedGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
+saveToBeContinuedGame gameState = BL.writeFile "json/saveGame.json" (encode gameState)
