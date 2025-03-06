@@ -8,7 +8,7 @@ import qualified Data.ByteString.Lazy as B
 import Stages
 import Tutorial
 import GameComponents
-import HistoryShenanigans
+import HistoryFunctionatlities
 import WindowManipulation
 import GameState (GameState(..), Phase(..))
 
@@ -72,7 +72,7 @@ matchHistory window = do
   let historyList = toListFromJSON jsonData
   showGameHistory historyList window
 
-  -- a função showGameHistory em HistoryShenanigans.hs é um exemplo de como iterar por essa lista pra mostrar na tela
+  -- a função showGameHistory em HistoryFunctionatlities.hs é um exemplo de como iterar por essa lista pra mostrar na tela
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
 

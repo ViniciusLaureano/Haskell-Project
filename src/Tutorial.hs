@@ -43,7 +43,7 @@ startTutorial window = do
   writeScreenCenter 2 "as peças do oponente. O jogo é dividido em três fases: colocação de peças, movimentação de peças e fase final" window
   writeScreenCenter 3 "(quando um jogador tem apenas três peças)." window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   key <- getCh
   case key of
     KeyRight -> firstStep window
@@ -56,7 +56,7 @@ firstStep window = do
   clearAndWriteScreenCenter 0 "Esse será o seu tabuleiro durante o jogo se familiarize com ele :) " window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (2, 4) matrix window
   key <- getCh
   case key of
@@ -71,7 +71,7 @@ upMove matrix window (y, x) = do
   writeScreenCenter 1 "Teste apertando W pra mover o cursor para cima" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (y, x) matrix window
   key <- getCh
   case key of
@@ -87,7 +87,7 @@ rightMove matrix window (y, x) = do
   clearAndWriteScreenCenter 0 "Aperte D para mover o cursor para a direita" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (y, x) matrix window
   key <- getCh
   case key of
@@ -103,7 +103,7 @@ leftMove matrix window (y, x) = do
   clearAndWriteScreenCenter 0 "Aperte A para mover o cursor para a esquerda" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (y, x) matrix window
   key <- getCh
   case key of
@@ -119,7 +119,7 @@ downMove matrix window (y, x) = do
   clearAndWriteScreenCenter 0 "Aperte S para mover o cursor para baixo" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (y, x) matrix window
   key <- getCh
   case key of
@@ -135,7 +135,7 @@ makeMove matrix window (y, x)= do
   clearAndWriteScreenCenter 0 "Aperte ENTER para colocar uma peça na posição do cursor" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (y, x) matrix window
   key <- getCh
   case key of
@@ -154,7 +154,7 @@ intermission matrix window = do
   writeScreenCenter 1 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   let updatedmatrix = matrixSecondStep
   boardGenerate (1, 1) updatedmatrix window
   key <- getCh
@@ -172,7 +172,7 @@ removePiece matrix window = do
   writeScreenCenter 2 "jogador 2 pode escolher e remover a peça do jogador 1, vamos remover a peça (2, 4)" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (1, 1) matrix window
   let updatedmatrix = removeOpponentPiece matrix (2, 4)
   key <- getCh
@@ -189,7 +189,7 @@ thirdStep matrix window = do
   writeScreenCenter 1 "Quando algum jogador tiver com apenas 3 peças ele entrará no estágio 3" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate (1, 1) matrix window
   let updatedmatrix = matrixThirdStep
   key <- getCh
@@ -207,7 +207,7 @@ freeMove matrix window = do
   writeScreenCenter 1"Sua movimentação agora não está mais limitada apenas às casas adjacentes" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   boardGenerate(1, 1) matrix window
   let updatedmatrix = removeOpponentPiece matrix (5, 4)
   key <- getCh 
@@ -225,7 +225,7 @@ playerTwoWins matrix window = do
   writeScreenCenter 1 "restantes primeiro perde. Nesse caso o jogador 2 ganhou o jogo" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   
   boardGenerate (1, 1) matrix window
   key <- getCh
@@ -242,7 +242,7 @@ lastStep matrix window = do
   clearAndWriteScreenCenter 0 "Agora que você conhece as regras e estratégias básicas, é hora de jogar! Divirta-se com o Nine Men's Morris" window
   writeScreenCenter 1 "um jogo que combina estratégia, planejamento e antecipação." window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
+  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
   key <- getCh
   case key of
     KeyLeft -> playerTwoWins matrix window
