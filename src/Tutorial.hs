@@ -53,7 +53,7 @@ startTutorial window = do
 firstStep :: Window -> IO()
 firstStep window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 4 60 "Esse será o seu tabuleiro durante o jogo se familiarize com ele :) " window
+  clearAndWriteScreenCenter 0 "Esse será o seu tabuleiro durante o jogo se familiarize com ele :) " window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -67,8 +67,8 @@ firstStep window = do
 upMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 upMove matrix window (y, x) = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 4 60 "W A S D será a sua movimentação durante o jogo" window
-  writeScreen 10 60 "Teste apertando W pra mover o cursor para cima" window
+  clearAndWriteScreenCenter 0 "W A S D será a sua movimentação durante o jogo" window
+  writeScreenCenter 1 "Teste apertando W pra mover o cursor para cima" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -84,7 +84,7 @@ upMove matrix window (y, x) = do
 rightMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 rightMove matrix window (y, x) = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 10 60 "Aperte D para mover o cursor para a direita" window
+  clearAndWriteScreenCenter 0 "Aperte D para mover o cursor para a direita" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -100,7 +100,7 @@ rightMove matrix window (y, x) = do
 leftMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 leftMove matrix window (y, x) = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 10 60 "Aperte A para mover o cursor para a esquerda" window
+  clearAndWriteScreenCenter 0 "Aperte A para mover o cursor para a esquerda" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -116,7 +116,7 @@ leftMove matrix window (y, x) = do
 downMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 downMove matrix window (y, x) = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 10 60 "Aperte S para mover o cursor para baixo" window
+  clearAndWriteScreenCenter 0 "Aperte S para mover o cursor para baixo" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -132,7 +132,7 @@ downMove matrix window (y, x) = do
 makeMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 makeMove matrix window (y, x)= do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 10 60 "Aperte ENTER para colocar uma peça na posição do cursor" window
+  clearAndWriteScreenCenter 0 "Aperte ENTER para colocar uma peça na posição do cursor" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -150,8 +150,8 @@ makeMove matrix window (y, x)= do
 intermission :: [[(Int, Int)]] -> Window -> IO()
 intermission matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 9 40 "Nesse jogo, para sair do primeiro estágio é necessário colocar todas as peças no tabuleiro." window
-  writeScreen 10 40 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
+  clearAndWriteScreenCenter 0 "Nesse jogo, para sair do primeiro estágio é necessário colocar todas as peças no tabuleiro." window
+  writeScreenCenter 1 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -167,9 +167,9 @@ intermission matrix window = do
 removePiece :: [[(Int, Int)]] -> Window -> IO()
 removePiece matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 8 60 "ao formar um moínho(3 peças alinhadas) o jogador pode" window
-  writeScreen 9 60 "selecionar uma peça do seu openente e remove-la, nesse caso o" window
-  writeScreen 10 60 "jogador 2 pode escolher e remover a peça do jogador 1, vamos remover a peça (2, 4)" window
+  clearAndWriteScreenCenter 0 "ao formar um moínho(3 peças alinhadas) o jogador pode" window
+  writeScreenCenter 1 "selecionar uma peça do seu openente e remove-la, nesse caso o" window
+  writeScreenCenter 2 "jogador 2 pode escolher e remover a peça do jogador 1, vamos remover a peça (2, 4)" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -185,8 +185,8 @@ removePiece matrix window = do
 thirdStep :: [[(Int, Int)]] -> Window -> IO()
 thirdStep matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 9 60 "O jogo seguirá com ambos os jogadores retirando peças do seu openente" window
-  writeScreen 10 60 "Quando algum jogador tiver com apenas 3 peças ele entrará no estágio 3" window
+  clearAndWriteScreenCenter 0 "O jogo seguirá com ambos os jogadores retirando peças do seu openente" window
+  writeScreenCenter 1 "Quando algum jogador tiver com apenas 3 peças ele entrará no estágio 3" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -203,8 +203,8 @@ thirdStep matrix window = do
 freeMove :: [[(Int, Int)]] -> Window -> IO()
 freeMove matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 9 60 "Como o jogador 1 tem apenas 3 peças no tabuleiro, ele entra no terceiro estágio" window
-  writeScreen 10 60 "Sua movimentação agora não está mais limitada apenas às casas adjacentes" window
+  clearAndWriteScreenCenter 0 "Como o jogador 1 tem apenas 3 peças no tabuleiro, ele entra no terceiro estágio" window
+  writeScreenCenter 1"Sua movimentação agora não está mais limitada apenas às casas adjacentes" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -221,8 +221,8 @@ freeMove matrix window = do
 playerTwoWins :: [[(Int, Int)]] -> Window -> IO()
 playerTwoWins matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 9 60 "Mesmo no terceiro estágio o jogo continua, e quem ficar com 2 peças" window
-  writeScreen 10 60 "restantes primeiro perde. Nesse caso o jogador 2 ganhou o jogo" window
+  clearAndWriteScreenCenter 0 "Mesmo no terceiro estágio o jogo continua, e quem ficar com 2 peças" window
+  writeScreenCenter 1 "restantes primeiro perde. Nesse caso o jogador 2 ganhou o jogo" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
@@ -239,8 +239,8 @@ playerTwoWins matrix window = do
 lastStep :: [[(Int, Int)]] -> Window -> IO()
 lastStep matrix window = do
   (rows, cols) <- scrSize
-  clearAndWriteScreen 9 40 "Agora que você conhece as regras e estratégias básicas, é hora de jogar! Divirta-se com o Nine Men's Morris" window
-  writeScreen 10 40 "um jogo que combina estratégia, planejamento e antecipação." window
+  clearAndWriteScreenCenter 0 "Agora que você conhece as regras e estratégias básicas, é hora de jogar! Divirta-se com o Nine Men's Morris" window
+  writeScreenCenter 1 "um jogo que combina estratégia, planejamento e antecipação." window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "q para sair do tutorial" window
   key <- getCh
