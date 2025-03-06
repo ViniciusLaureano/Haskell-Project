@@ -148,6 +148,7 @@ makeMove matrix window (y, x)= do
   
 intermission :: [[(Int, Int)]] -> Window -> IO()
 intermission matriz window = do
+  (rows, cols) <- scrSize
   clearAndWriteScreenCenter 0 "Nesse jogo, para sair do primeiro estágio é necessário que cada jogador coloque 9 peças no tabuleiro." window
   writeScreenCenter 1 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
