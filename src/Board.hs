@@ -8,9 +8,9 @@ import WindowManipulation
 
 
 boardGenerate :: (Int, Int) -> [[(Int, Int)]] -> Window -> IO ()
-boardGenerate (y, x) matriz window = do
+boardGenerate (y, x) matrix window = do
   boardBody window
-  findPieces matriz 1 1 window
+  findPieces matrix 1 1 window
   drawPointer (y, x) window
 
 

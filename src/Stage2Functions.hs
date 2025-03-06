@@ -53,15 +53,15 @@ movePiece board (r1, c1) (r2, c2) jogador =
 handleMillRemoval :: [[(Int, Int)]] -> Int -> Bool -> Window -> IO ([[ (Int, Int) ]], Bool)
 handleMillRemoval board jogador bot window = do
   let oponente = if jogador == 1 then 2 else 1
-  let todasPecasOponente = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
-  let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
+  let allOpponentPiecese = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
+  let piecesNotInMill = filter (\pos -> not (isMillFormed board pos oponente)) allOpponentPiecese
 
   posToRemove <-if bot && jogador == 2
                   then botRemovePiece board oponente
                 else 
-                  if null pecasNaoMoinho
+                  if null piecesNotInMill
                     then selectOpponentPiece board oponente window
-                  else selectOpponentPieceFromList board oponente pecasNaoMoinho window
+                  else selectOpponentPieceFromList board oponente piecesNotInMill window
 
   if posToRemove == (-1, -1)
     then return (board, True)  
@@ -144,10 +144,10 @@ botMove board jogador = do
 botRemovePiece :: [[(Int, Int)]] -> Int -> IO (Int, Int)
 botRemovePiece board jogador = do
   let oponente = if jogador == 1 then 2 else 1
-  let todasPecasOponente = [(r, c) | r <- [0..7], c <- [0..7], snd (board !! r !! c) == oponente]
-  let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
-  if null todasPecasOponente
+  let allOpponentPiecese = [(r, c) | r <- [0..7], c <- [0..7], snd (board !! r !! c) == oponente]
+  let piecesNotInMill = filter (\pos -> not (isMillFormed board pos oponente)) allOpponentPiecese
+  if null allOpponentPiecese
     then return (-1, -1)
-    else if null pecasNaoMoinho
-      then randomChoice todasPecasOponente
-      else randomChoice pecasNaoMoinho
+    else if null piecesNotInMill
+      then randomChoice allOpponentPiecese
+      else randomChoice piecesNotInMill

@@ -9,27 +9,27 @@ import WindowManipulation
 
 
 isValidPosition :: [[(Int, Int)]] -> (Int, Int) -> Bool
-isValidPosition matriz (r, c) =
-  let (v, _) = matriz !! r !! c
+isValidPosition matrix (r, c) =
+  let (v, _) = matrix !! r !! c
   in v == 1
 
 
 isOutOfBounds :: [[(Int, Int)]] -> (Int, Int) -> Bool
-isOutOfBounds matriz (r, c) =
-  r < 0 || r >= length matriz || c < 0 || c >= length (head matriz) || matriz !! r !! c == (-1, -1)
+isOutOfBounds matrix (r, c) =
+  r < 0 || r >= length matrix || c < 0 || c >= length (head matrix) || matrix !! r !! c == (-1, -1)
 
 
 findValidPosition :: [[(Int, Int)]] -> (Int, Int) -> (Int, Int) -> (Int, Int)
-findValidPosition matriz (r, c) (dr, dc)
-  | isOutOfBounds matriz (r, c) = (r - dr, c - dc)
-  | isValidPosition matriz (r, c) = (r, c)
-  | otherwise = findValidPosition matriz (r + dr, c + dc) (dr, dc)
+findValidPosition matrix (r, c) (dr, dc)
+  | isOutOfBounds matrix (r, c) = (r - dr, c - dc)
+  | isValidPosition matrix (r, c) = (r, c)
+  | otherwise = findValidPosition matrix (r + dr, c + dc) (dr, dc)
 
 
 moveCursor :: [[(Int, Int)]] -> (Int, Int) -> (Int, Int) -> (Int, Int)
-moveCursor matriz (r, c) (dr, dc) =
-  let newPos = findValidPosition matriz (r + dr, c + dc) (dr, dc)
-  in if isValidPosition matriz newPos then newPos else (r, c)
+moveCursor matrix (r, c) (dr, dc) =
+  let newPos = findValidPosition matrix (r + dr, c + dc) (dr, dc)
+  in if isValidPosition matrix newPos then newPos else (r, c)
 
 
 markPosition :: [[(Int, Int)]] -> (Int, Int) -> Int -> Bool -> Window -> IO ([[ (Int, Int) ]], Bool)
@@ -38,23 +38,23 @@ markPosition board (r, c) player bot window = do
     then return (board, False)
     else do
       let newBoard = take r board ++ [take c (board !! r) ++ [(1, player)] ++ drop (c + 1) (board !! r)] ++ drop (r + 1) board
-      let millAtual = isMillFormed newBoard (r, c) player  
-      let millAntigo = isMillFormed board (r, c) player  
+      let millCurrent = isMillFormed newBoard (r, c) player  
+      let millOld = isMillFormed board (r, c) player  
 
-      if millAtual && not millAntigo  
+      if millCurrent && not millOld  
         then do
-          let oponente = if player == 1 then 2 else 1
-          let todasPecasOponente = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponente]
-          let pecasNaoMoinho = filter (\pos -> not (isMillFormed board pos oponente)) todasPecasOponente
+          let oponent = if player == 1 then 2 else 1
+          let allOpponentPieces = [(r', c') | r' <- [0..7], c' <- [0..7], snd (board !! r' !! c') == oponent]
+          let piecesNotInMill = filter (\pos -> not (isMillFormed board pos oponent)) allOpponentPiecese
 
           posToRemove <- if bot && player == 2
             then do
-              if null pecasNaoMoinho  
-                then return (head todasPecasOponente)
-                else return (head pecasNaoMoinho)
-            else if null pecasNaoMoinho  
-                then selectOpponentPiece newBoard oponente window
-                else selectOpponentPieceFromList newBoard oponente pecasNaoMoinho window
+              if null piecesNotInMill  
+                then return (head allOpponentPieces)
+                else return (head piecesNotInMill)
+            else if null piecesNotInMill  
+                then selectOpponentPiece newBoard oponent window
+                else selectOpponentPieceFromList newBoard oponent piecesNotInMill window
 
           if posToRemove == (-1, -1)
             then return (newBoard, True)  
@@ -129,22 +129,22 @@ removeLoop board opponent cursor window = do
 
 
 readPiece :: [[(Int, Int)]] -> (Int, Int) -> Int -> Int -> Bool -> Bool -> Window -> IO (Int, Int)
-readPiece matriz cursor player totRounds millIsFormed bot window = do
-  boardGenerate cursor matriz window
+readPiece matrix cursor player totRounds millIsFormed bot window = do
+  boardGenerate cursor matrix window
   if bot && player == 2
     then do
-      botCursor <- findPlace matriz
+      botCursor <- findPlace matrix
       return botCursor
   else do
     ev <- getCh
     case ev of
-      KeyChar 'w' -> readPiece matriz (moveCursor matriz cursor (-1, 0)) player totRounds millIsFormed bot window
-      KeyChar 's' -> readPiece matriz (moveCursor matriz cursor (1, 0)) player totRounds millIsFormed bot window
-      KeyChar 'a' -> readPiece matriz (moveCursor matriz cursor (0, -1)) player totRounds millIsFormed bot window
-      KeyChar 'd' -> readPiece matriz (moveCursor matriz cursor (0, 1)) player totRounds millIsFormed bot window
+      KeyChar 'w' -> readPiece matrix (moveCursor matrix cursor (-1, 0)) player totRounds millIsFormed bot window
+      KeyChar 's' -> readPiece matrix (moveCursor matrix cursor (1, 0)) player totRounds millIsFormed bot window
+      KeyChar 'a' -> readPiece matrix (moveCursor matrix cursor (0, -1)) player totRounds millIsFormed bot window
+      KeyChar 'd' -> readPiece matrix (moveCursor matrix cursor (0, 1)) player totRounds millIsFormed bot window
       KeyChar '\n' -> return cursor
       KeyChar 'q' -> return (-1, -1)
-      _ -> readPiece matriz cursor player totRounds millIsFormed bot window
+      _ -> readPiece matrix cursor player totRounds millIsFormed bot window
 
 
 showPlayer :: Int -> String -> String -> Window -> IO ()

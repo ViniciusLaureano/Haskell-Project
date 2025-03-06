@@ -35,7 +35,7 @@ newGame window = do
 
   nickname2 <- getString (centerRow + 4) centerColumn window
 
-  stage1 matrizDefault 1 (1, nickname1, nickname2) False isBot window
+  stage1 matrixDefault 1 (1, nickname1, nickname2) False isBot window
 
   where
     againstBot :: Int -> Window -> IO Bool
