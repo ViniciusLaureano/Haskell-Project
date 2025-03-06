@@ -13,21 +13,12 @@ import Stage1Functions
 matrix = matrixDefault
 
 
-<<<<<<< HEAD
-matrizSecondStep::[[(Int, Int)]]
-matrizSecondStep = [[(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)],
-  [(-1, -1), (1, 0), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 1), (-1, -1)],
-  [(-1, -1), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (1, 0), (0, 0), (-1, -1)],
-  [(-1, -1), (0, 0), (0, 0), (1, 2), (1, 0), (1, 1), (0, 0), (0, 0), (-1, -1)],
-  [(-1, -1), (1, 1), (1, 2), (1, 0), (-1, -1), (1, 0), (1, 2), (1, 2), (-1, -1)],
-=======
 matrixSecondStep::[[(Int, Int)]]
 matrixSecondStep = [[(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)],
   [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 1), (-1, -1)],
   [(-1, -1), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (1, 2), (0, 0), (-1, -1)],
   [(-1, -1), (0, 0), (0, 0), (1, 2), (1, 2), (1, 1), (0, 0), (0, 0), (-1, -1)],
   [(-1, -1), (1, 2), (1, 2), (1, 2), (-1, -1), (1, 1), (1, 2), (1, 2), (-1, -1)],
->>>>>>> main
   [(-1, -1), (0, 0), (0, 0), (1, 1), (1, 1), (1, 2), (0, 0), (0, 0), (-1, -1)],
   [(-1, -1), (0, 0), (1, 2), (0, 0), (1, 0), (0, 0), (1, 1), (0, 0), (-1, -1)],
   [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 2), (-1, -1)],
@@ -157,29 +148,17 @@ makeMove matrix window (y, x)= do
     _ -> makeMove matrix window (2, 4)
   
 intermission :: [[(Int, Int)]] -> Window -> IO()
-<<<<<<< HEAD
 intermission matriz window = do
   clearAndWriteScreen 9 40 "Nesse jogo, para sair do primeiro estágio é necessário que cada jogador coloque 9 peças no tabuleiro." window
   writeScreen 10 40 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
   writeScreen 13 100 "q para sair do tutorial" window
-  let updatedMatriz = matrizSecondStep
-  boardGenerate (1, 1) updatedMatriz window
-=======
-intermission matrix window = do
-  (rows, cols) <- scrSize
-  clearAndWriteScreenCenter 0 "Nesse jogo, para sair do primeiro estágio é necessário colocar todas as peças no tabuleiro." window
-  writeScreenCenter 1 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
-  writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
-  writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
-  let updatedmatrix = matrixSecondStep
-  boardGenerate (1, 1) updatedmatrix window
->>>>>>> main
+  let updatedMatrix = matrixSecondStep
+  boardGenerate (1, 1) updatedMatrix window
   key <- getCh
   case key of
-    KeyRight -> removePiece updatedmatrix window
+    KeyRight -> removePiece updatedMatrix window
     KeyLeft -> makeMove matrix window (2, 4)
     KeyChar 'q' -> return ()
     _ -> intermission matrix window
