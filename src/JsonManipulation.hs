@@ -13,11 +13,11 @@ import WindowManipulation
 saveFinalGameState :: GameState -> Window -> IO ()
 saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
-  --existingData <- B.readFile "json/saveHistory.json"
+  existingData <- B.readFile "json/saveHistory.json"
 
-  handle <- openFile "json/saveHistory.json" ReadMode
-  existingData <- B.hGetContents handle
-  hClose handle  -- Ensure the file is closed
+  --handle <- openFile "json/saveHistory.json" ReadMode
+  --existingData <- B.hGetContents handle
+  --hClose handle  -- Ensure the file is closed
   
   -- Decode the JSON or create an empty list if that fails
   let existingGames = case decode existingData of
@@ -40,9 +40,9 @@ saveFinalGameState gameState window = do
 
 fileSaver :: GameHistoryList -> IO()
 fileSaver updatedGames = do
-  handle <- openFile "json/saveHistory.json" WriteMode
-  B.hPut handle (encode updatedGames)
-  hClose handle 
+  -- Use 'withFile' to ensure the handle is properly managed
+  withFile "json/saveHistory.json" WriteMode $ \handle -> do
+    B.hPut handle (encode updatedGames)
       
 
 saveToBeContinuedGame :: GameState -> IO ()
