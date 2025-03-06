@@ -28,8 +28,9 @@ library
       Board
       BotFunctions
       GameComponents
+      GameHistoryList
       GameState
-      HistoryShenanigans
+      HistoryFunctionatlities
       JsonManipulation
       Menu
       MenuFunctionalities

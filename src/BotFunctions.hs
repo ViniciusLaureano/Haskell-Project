@@ -3,14 +3,14 @@ module BotFunctions (findPlace, randomChoice) where
 import System.Random
 import GameComponents
 
-matriz = matrizDefault
+matrix = matrixDefault
 findPlace :: [[(Int, Int)]] -> IO (Int, Int)
-findPlace matriz = do
+findPlace matrix = do
   i <- randomRIO (1, 7)
   j <- randomRIO (1, 7)
-  let tupla = matriz !! i !! j :: (Int, Int)
-  if fst tupla == 1 && snd tupla == 0 then return (i, j)
-  else findPlace matriz
+  let tuple = matrix !! i !! j :: (Int, Int)
+  if fst tuple == 1 && snd tuple == 0 then return (i, j)
+  else findPlace matrix
 
 randomChoice :: [a] -> IO a
 randomChoice xs = do

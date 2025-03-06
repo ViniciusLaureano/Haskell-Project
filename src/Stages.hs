@@ -2,83 +2,105 @@ module Stages (stage1, stage2, stage3) where
 
 import UI.HSCurses.Curses
 
-import WindowManipulation
+import GameState
 import Validations
 import Stage1Functions
 import Stage2Functions
 import Stage3Functions
-import GameState
 import JsonManipulation
+import WindowManipulation
 
 stage1 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
-stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window = 
-  if validateStage1 totJogadas 
-    then stage2 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window
+stage1 matrix totRounds (player, nickname1, nickname2) mill bot window = 
+  if validateStage1 totRounds 
+    then stage2 matrix totRounds (player, nickname1, nickname2) mill bot window
   else do
-    mostraJogador jogador nomeJogador1 nomeJogador2 window
+    showPlayer player nickname1 nickname2 window
+    writeScreenCenter 0 "Fase 1" window
+    writeScreen 0 0 ("Rodada: " ++ (show totRounds)) window
 
-    cursor <- readPiece matriz (1, 1) jogador totJogadas moinho bot window
+    cursor <- readPiece matrix (1, 1) player totRounds mill bot window
 
-    if cursor == (-1, -1) then do
-      let state = GameState { 
-        gameBoard = matriz
-      , rounds = totJogadas
-      , players = (jogador, nomeJogador1, nomeJogador2)
-      , phase = Phase1
-      , bot = True
+    if cursor == (-1, -1) then
+      saveToBeContinuedGame GameState { 
+        gameBoard = matrix
+        , rounds = totRounds
+        , players = (player, nickname1, nickname2)
+        , phase = Phase1
+        , mill = mill
+        , bot = bot
       }
-      saveToBeContinuedGame state
-      clearAndWriteScreen 0 0 "Save game" window
     else do
-      (novaMatriz, moinhoAtual) <- markPosition matriz cursor jogador bot window
-      if novaMatriz /= matriz 
-        then stage1 novaMatriz (totJogadas + 1) ((jogador `mod` 2 + 1), nomeJogador1, nomeJogador2) moinhoAtual bot window
+      (newmatrix, currentMill) <- markPosition matrix cursor player bot window
+      if newmatrix /= matrix 
+        then stage1 newmatrix (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) currentMill bot window
       else
-        stage1 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinhoAtual bot window
+        stage1 matrix totRounds (player, nickname1, nickname2) currentMill bot window
+
 
 stage2 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
-stage2 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window = 
-  if validateStage2 matriz 
-    then stage3 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window
+stage2 matrix totRounds (player, nickname1, nickname2) mill bot window = 
+  if validateStage2 matrix player
+    then stage3 matrix totRounds (player, nickname1, nickname2) mill bot window
   else do
-    clearAndWriteScreen 0 0 "Stage 2" window
-    
-    (r1, c1, r2, c2) <- readMove matriz (1, 1) jogador bot window
+    showPlayer player nickname1 nickname2 window
+    writeScreenCenter 0 "Fase 2" window
+    writeScreen 0 0 ("Rodada: " ++ (show totRounds)) window
+
+    (r1, c1, r2, c2) <- readMove matrix (1, 1) player bot window
 
     if (r1, c1, r2, c2) == (-1, -1, -1, -1) then
-      clearAndWriteScreen 0 0 "Save game" window
-
+      saveToBeContinuedGame GameState { 
+        gameBoard = matrix
+        , rounds = totRounds
+        , players = (player, nickname1, nickname2)
+        , phase = Phase2
+        , mill = mill
+        , bot = bot
+      }
     else do    
-      let newBoard = movePiece matriz (r1, c1) (r2, c2) jogador
-      let moinhoFormado = isMillFormed newBoard (r2, c2) jogador
+      let newBoard = movePiece matrix (r1, c1) (r2, c2) player
+      let formedMill = isMillFormed newBoard (r2, c2) player
 
-      (finalBoard, moinhoAtivo) <- if moinhoFormado
+      (finalBoard, activeMill) <- if formedMill
 
-        then handleMillRemoval newBoard jogador bot window
+        then handleMillRemoval newBoard player bot window
         else return (newBoard, False)
 
-      stage2 finalBoard (totJogadas + 1) ((jogador `mod` 2 + 1), nomeJogador1, nomeJogador2) moinhoAtivo bot window
+      stage2 finalBoard (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) activeMill bot window
 
 
 stage3 :: [[(Int, Int)]] -> Int -> (Int, String, String) -> Bool -> Bool -> Window -> IO ()
-stage3 matriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinho bot window = 
-  if validateStage3 matriz 
-    then finishGame matriz totJogadas (jogador, nomeJogador1, nomeJogador2)
-  else do
-    mostraJogador jogador nomeJogador1 nomeJogador2 window
-
-    if bot && jogador == 2
-      then do
-      (novaMatriz, _) <- botMove matriz jogador window
-      stage3 novaMatriz (totJogadas + 1) ((jogador `mod` 2 + 1), nomeJogador1, nomeJogador2) moinho bot window
+stage3 matrix totRounds (player, nickname1, nickname2) mill bot window = 
+  if playerPieces matrix player > 3
+    then stage2 matrix totRounds (player, nickname1, nickname2) mill bot window
     else do
-      (r1, c1) <- readPiece3 matriz (1, 1) jogador bot window
-      if (r1, c1) == (-1, -1)
-        then clearAndWriteScreen 0 0 "Save game" window
+      if validateStage3 matrix 
+        then finishGame matrix totRounds (player, nickname1, nickname2) bot window
+      else do
+        showPlayer player nickname1 nickname2 window
+        writeScreenCenter 0 "Fase 3" window
+        writeScreen 0 0 ("Rodada: " ++ (show totRounds)) window
+
+        if bot && player == 2
+          then do
+          (newmatrix, _) <- botMove matrix player window
+          stage3 newmatrix (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) mill bot window
         else do
-        (r2, c2) <- readPiece3 matriz (r1, c1) jogador bot window
-        (novaMatriz, moinhoAtual) <- movePieceStageThree matriz (r1, c1) (r2, c2) jogador bot window
-        if novaMatriz /= matriz 
-          then stage3 novaMatriz (totJogadas + 1) ((jogador `mod` 2 + 1), nomeJogador1, nomeJogador2) moinhoAtual bot window
-        else
-          stage3 novaMatriz totJogadas (jogador, nomeJogador1, nomeJogador2) moinhoAtual bot window
+          (r1, c1) <- readPiece3 matrix (1, 1) player bot window
+          if (r1, c1) == (-1, -1) then 
+            saveToBeContinuedGame GameState { 
+              gameBoard = matrix
+              , rounds = totRounds
+              , players = (player, nickname1, nickname2)
+              , phase = Phase3
+              , mill = mill
+              , bot = bot
+            }
+            else do
+            (r2, c2) <- readPiece3 matrix (r1, c1) player bot window
+            (newmatrix, currentMill) <- movePieceStageThree matrix (r1, c1) (r2, c2) player bot window
+            if newmatrix /= matrix 
+              then stage3 newmatrix (totRounds + 1) ((player `mod` 2 + 1), nickname1, nickname2) currentMill bot window
+            else
+              stage3 newmatrix totRounds (player, nickname1, nickname2) currentMill bot window

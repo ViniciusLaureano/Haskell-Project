@@ -1,25 +1,41 @@
 module JsonManipulation (saveFinalGameState, saveToBeContinuedGame) where
 
 import GameState (GameState(..), Phase(..))
-import qualified Data.ByteString.Lazy as B
+import GameHistoryList (GameHistoryList(..))
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BL
 import Data.Aeson (encode, decode)
 import Data.Maybe (fromMaybe)
+import System.IO (withFile, openFile, hClose, IOMode(ReadMode), IOMode(WriteMode))
 
-saveFinalGameState :: GameState -> IO()
-saveFinalGameState gameState = do
+import UI.HSCurses.Curses
+import WindowManipulation
+
+saveFinalGameState :: GameState -> Window -> IO ()
+saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
-    existingData <- B.readFile "json/saveHistory.json"
+  existingData <- BS.readFile "json/saveHistory.json"
+  
+  -- Decode the JSON or create an empty list if that fails
+  let existingGames = case decode (BL.fromStrict existingData) of
+          Just (GameHistoryList games) -> games
+          Nothing -> []
 
-    -- Decode existing JSON array or default to an empty list
-    let existingGames :: [GameState]
-        existingGames = fromMaybe [] (decode existingData)
+  -- Update the list with the new game state
+  let updatedGames = GameHistoryList (existingGames ++ [gameState])
+  -- clearAndWriteScreenCenter 0 (show (updatedGames)) window
+  clearAndWriteScreenCenter 2 "Partida Finalizada!" window
+  writeScreenCenter 3 "(aperte qualquer tecla para continuar)" window
+  ch <- getCh
 
-    -- Append the new game state
-    let updatedGames = existingGames ++ [gameState]
+  fileSaver updatedGames
 
-    -- Write the updated array back to the file
-    B.writeFile "json/saveHistory.json" (encode updatedGames)
-
+fileSaver :: GameHistoryList -> IO()
+fileSaver updatedGames = do
+  -- Use 'withFile' to ensure the handle is properly managed
+  withFile "json/saveHistory.json" WriteMode $ \handle -> do
+    BL.hPut handle (encode updatedGames)
+      
 
 saveToBeContinuedGame :: GameState -> IO ()
-saveToBeContinuedGame gameState = B.writeFile "json/saveGame.json" (encode gameState)
+saveToBeContinuedGame gameState = BL.writeFile "json/saveGame.json" (encode gameState)
