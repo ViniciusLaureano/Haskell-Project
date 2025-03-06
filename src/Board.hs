@@ -1,4 +1,4 @@
-module Board (boardGenerate) where
+module Board (boardGenerate, boardHistory) where
 
 import UI.HSCurses.Curses
 
@@ -72,3 +72,9 @@ boardBody window = do
   writeScreen (rows `div` 2 + 8) (cols `div` 2 - 18) " ┃                 ┃                 ┃" window
   writeScreen (rows `div` 2 + 9) (cols `div` 2 - 18) " *━━━━━━━━━━━━━━━━━*━━━━━━━━━━━━━━━━━*" window
 
+
+
+boardHistory :: [[(Int, Int)]] -> Window -> IO ()
+boardHistory matrix window = do
+  boardBody window
+  findPieces matrix 1 1 window
