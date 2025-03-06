@@ -5,7 +5,7 @@ import GameHistoryList (GameHistoryList(..))
 import qualified Data.ByteString.Lazy as B
 import Data.Aeson (encode, decode)
 import Data.Maybe (fromMaybe)
-import System.IO (withFile, openFile, hClose, IOMode(ReadMode))
+import System.IO (withFile, openFile, hClose, IOMode(ReadMode), IOMode(WriteMode))
 
 import UI.HSCurses.Curses
 import WindowManipulation
@@ -15,9 +15,9 @@ saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
   --existingData <- B.readFile "json/saveHistory.json"
 
-  handle <- openFile "json/saveHistory.json" ReadMode
-  existingData <- B.hGetContents handle
-  hClose handle  -- Ensure the file is closed
+  readHandle <- openFile "json/saveHistory.json" ReadMode
+  existingData <- B.hGetContents readHandle
+  hClose readHandle  -- Ensure the file is closed
   
   -- Decode the JSON or create an empty list if that fails
   let existingGames = case decode existingData of
@@ -32,7 +32,10 @@ saveFinalGameState gameState window = do
   --ch <- getCh
 
   -- Save in the file
-  B.writeFile "json/saveHistory.json" (encode updatedGames)
+  writeHandle <- openFile "json/saveHistory.json" WriteMode
+  B.hPut writeHandle (encode updatedGames)
+  hClose writeHandle 
+  --B.writeFile "json/saveHistory.json" (encode updatedGames)
       
 
 saveToBeContinuedGame :: GameState -> IO ()
