@@ -24,8 +24,9 @@ saveFinalGameState gameState window = do
   -- Update the list with the new game state
   let updatedGames = GameHistoryList (existingGames ++ [gameState])
   -- clearAndWriteScreenCenter 0 (show (updatedGames)) window
-  clearAndWriteScreenCenter 0 "Partida Finalizada!" window
-  writeScreenCenter 1 "(aperte qualquer tecla para continuar)" window
+  clearAndWriteScreenCenter 2 "Partida Finalizada!" window
+  writeScreenCenter 3 "(aperte qualquer tecla para continuar)" window
+  ch <- getCh
 
   fileSaver updatedGames
 
