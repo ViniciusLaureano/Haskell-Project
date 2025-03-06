@@ -15,9 +15,9 @@ saveFinalGameState gameState window = do
     -- Read the existing file (if it exists)
   --existingData <- B.readFile "json/saveHistory.json"
 
-  readHandle <- openFile "json/saveHistory.json" ReadMode
-  existingData <- B.hGetContents readHandle
-  hClose readHandle  -- Ensure the file is closed
+  handle <- openFile "json/saveHistory.json" ReadMode
+  existingData <- B.hGetContents handle
+  hClose handle  -- Ensure the file is closed
   
   -- Decode the JSON or create an empty list if that fails
   let existingGames = case decode existingData of
@@ -31,11 +31,18 @@ saveFinalGameState gameState window = do
   writeScreenCenter 1 "(aperte qualquer tecla para continuar)" window
   --ch <- getCh
 
+  fileSaver updatedGames
   -- Save in the file
-  writeHandle <- openFile "json/saveHistory.json" WriteMode
-  B.hPut writeHandle (encode updatedGames)
-  hClose writeHandle 
+  --handle <- openFile "json/saveHistory.json" WriteMode
+  --B.hPut writeHandle (encode updatedGames)
+  --hClose writeHandle 
   --B.writeFile "json/saveHistory.json" (encode updatedGames)
+
+fileSaver :: GameHistoryList -> IO()
+fileSaver updatedGames = do
+  handle <- openFile "json/saveHistory.json" WriteMode
+  B.hPut handle (encode updatedGames)
+  hClose handle 
       
 
 saveToBeContinuedGame :: GameState -> IO ()
