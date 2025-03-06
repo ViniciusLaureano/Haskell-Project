@@ -6,7 +6,7 @@ import UI.HSCurses.Curses
 
 
 validateStage1 :: Int -> Bool
-validateStage1 totRounds = totRounds == 19
+validateStage1 totRounds = totRounds >= 19
 
 
 validateStage2 :: [[(Int, Int)]] -> Int -> Bool

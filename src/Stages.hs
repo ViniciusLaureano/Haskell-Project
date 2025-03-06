@@ -54,7 +54,7 @@ stage2 matrix totRounds (player, nickname1, nickname2) mill bot window =
         gameBoard = matrix
         , rounds = totRounds
         , players = (player, nickname1, nickname2)
-        , phase = Phase1
+        , phase = Phase2
         , mill = mill
         , bot = bot
       }
@@ -93,7 +93,7 @@ stage3 matrix totRounds (player, nickname1, nickname2) mill bot window =
               gameBoard = matrix
               , rounds = totRounds
               , players = (player, nickname1, nickname2)
-              , phase = Phase1
+              , phase = Phase3
               , mill = mill
               , bot = bot
             }
