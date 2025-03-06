@@ -70,6 +70,8 @@ matchHistory :: Window -> IO ()
 matchHistory window = do
   jsonData <- loadHistoryJSON
   let historyList = toListFromJSON jsonData
+  showGameHistory historyList window
+
   -- a função showGameHistory em HistoryShenanigans.hs é um exemplo de como iterar por essa lista pra mostrar na tela
   clearAndWriteScreen 0 0 "Not implemented yet" window
 
