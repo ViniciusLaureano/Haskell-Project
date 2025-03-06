@@ -15,12 +15,12 @@ matriz = matrizDefault
 
 matrizSecondStep::[[(Int, Int)]]
 matrizSecondStep = [[(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)],
-  [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 1), (-1, -1)],
-  [(-1, -1), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (1, 2), (0, 0), (-1, -1)],
-  [(-1, -1), (0, 0), (0, 0), (1, 2), (1, 2), (1, 1), (0, 0), (0, 0), (-1, -1)],
-  [(-1, -1), (1, 2), (1, 2), (1, 2), (-1, -1), (1, 1), (1, 2), (1, 2), (-1, -1)],
+  [(-1, -1), (1, 0), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 1), (-1, -1)],
+  [(-1, -1), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (1, 0), (0, 0), (-1, -1)],
+  [(-1, -1), (0, 0), (0, 0), (1, 2), (1, 0), (1, 1), (0, 0), (0, 0), (-1, -1)],
+  [(-1, -1), (1, 1), (1, 2), (1, 0), (-1, -1), (1, 0), (1, 2), (1, 2), (-1, -1)],
   [(-1, -1), (0, 0), (0, 0), (1, 1), (1, 1), (1, 2), (0, 0), (0, 0), (-1, -1)],
-  [(-1, -1), (0, 0), (1, 2), (0, 0), (1, 1), (0, 0), (1, 1), (0, 0), (-1, -1)],
+  [(-1, -1), (0, 0), (1, 2), (0, 0), (1, 0), (0, 0), (1, 1), (0, 0), (-1, -1)],
   [(-1, -1), (1, 1), (0, 0), (0, 0), (1, 2), (0, 0), (0, 0), (1, 2), (-1, -1)],
   [(-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1), (-1, -1)]]
 
@@ -142,7 +142,7 @@ makeMove matriz window (y, x)= do
   
 intermission :: [[(Int, Int)]] -> Window -> IO()
 intermission matriz window = do
-  clearAndWriteScreen 9 40 "Nesse jogo, para sair do primeiro estágio é necessário colocar todas as peças no tabuleiro." window
+  clearAndWriteScreen 9 40 "Nesse jogo, para sair do primeiro estágio é necessário que cada jogador coloque 9 peças no tabuleiro." window
   writeScreen 10 40 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
   writeScreen 11 100 "➡ para avançar " window
   writeScreen 12 100 "⬅ para voltar " window
