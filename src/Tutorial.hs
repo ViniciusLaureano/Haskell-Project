@@ -61,7 +61,8 @@ firstStep window = do
   case key of
     KeyRight -> upMove matrix window (2, 4)
     KeyChar 'q' -> return() 
-    _ -> startTutorial window
+    KeyLeft -> startTutorial window
+    _ -> firstStep window
     
 upMove :: [[(Int, Int)]] -> Window -> (Int, Int) -> IO()
 upMove matrix window (y, x) = do
@@ -76,7 +77,7 @@ upMove matrix window (y, x) = do
   case key of
     KeyChar 'w' -> upMove matrix window (1, 4)
     KeyRight -> rightMove matrix window (1, 4)
-    KeyLeft -> startTutorial window
+    KeyLeft -> firstStep window
     KeyChar 'q' -> return ()
     _ -> upMove matrix window (y, x)
 
@@ -148,12 +149,11 @@ makeMove matrix window (y, x)= do
   
 intermission :: [[(Int, Int)]] -> Window -> IO()
 intermission matriz window = do
-  (rows, cols) <- scrSize
-  clearAndWriteScreenCenter 0 "Nesse jogo, para sair do primeiro estágio é necessário que cada jogador coloque 9 peças no tabuleiro." window
-  writeScreenCenter 1 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
-  writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
-  writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
-  writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
+  clearAndWriteScreen 9 40 "Nesse jogo, para sair do primeiro estágio é necessário que cada jogador coloque 9 peças no tabuleiro." window
+  writeScreen 10 40 "entrando no segundo estágio,as peças podem começar a se mover para casas adjacentes" window
+  writeScreen 11 100 "➡ para avançar " window
+  writeScreen 12 100 "⬅ para voltar " window
+  writeScreen 13 100 "q para sair do tutorial" window
   let updatedMatrix = matrixSecondStep
   boardGenerate (1, 1) updatedMatrix window
   key <- getCh
@@ -167,8 +167,9 @@ removePiece :: [[(Int, Int)]] -> Window -> IO()
 removePiece matrix window = do
   (rows, cols) <- scrSize
   clearAndWriteScreenCenter 0 "ao formar um moínho(3 peças alinhadas) o jogador pode" window
-  writeScreenCenter 1 "selecionar uma peça do seu openente e remove-la, nesse caso o" window
-  writeScreenCenter 2 "jogador 2 pode escolher e remover a peça do jogador 1, vamos remover a peça (2, 4)" window
+  writeScreenCenter 1 "selecionar uma peça que não faça parte de um moínho (a não ser que seja a ultima peça)" window
+  writeScreenCenter 2 "do seu openente e remove-la, nesse caso o" window
+  writeScreenCenter 3 "jogador 2 pode escolher e remover a peça do jogador 1, vamos remover a peça (2, 4)" window
   writeScreen 11 (cols `div` 2 + 22) "➡ para avançar " window
   writeScreen 12 (cols `div` 2 + 22) "⬅ para voltar " window
   writeScreen 13 (cols `div` 2 + 22) "Digite 'q' para sair do tutorial" window
@@ -247,17 +248,3 @@ lastStep matrix window = do
     KeyLeft -> playerTwoWins matrix window
     KeyChar 'q' -> return ()
     _ -> lastStep matrix window
-    
-  
-  
-
-
-
-
-
-
-
-
-
-
-
